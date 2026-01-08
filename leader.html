@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Leader Registration | RISE UP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: #fff; padding: 40px 30px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; border: 1px solid #ffffff; animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .logo { width: 85px; height: 85px; border-radius: 50%; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 3px solid #f8fafc; }
+        h2 { font-size: 24px; color: #1e293b; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+        p { font-size: 14px; color: #64748b; margin-bottom: 30px; line-height: 1.5; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+        .field { position: relative; }
+        .field i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        input { width: 100%; padding: 15px 15px 15px 45px; border: 2px solid #e2e8f0; border-radius: 14px; outline: none; font-size: 16px; transition: 0.3s; background: #f8fafc; }
+        input:focus { border-color: #1e293b; background: #fff; box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.05); }
+        .btn { width: 100%; padding: 16px; background: #1e293b; color: #fff; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.3s; box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2); }
+        .btn:active { transform: scale(0.98); }
+        #result { display: none; margin-top: 10px; padding: 25px; background: #f8fafc; border-radius: 20px; border: 2px dashed #cbd5e1; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .success-badge { background: #dcfce7; color: #15803d; padding: 6px 12px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <img src="https://i.ibb.co/Q3Dpc7cV/1767694948186.png" class="logo" alt="Logo">
+    <div id="regForm">
+        <h2>Leader Portal</h2>
+        <p>Register karke apna secret code generate karein.</p>
+        <div class="input-group">
+            <label>Full Name</label>
+            <div class="field">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="name" placeholder="Enter your name">
+            </div>
+        </div>
+        <div class="input-group">
+            <label>WhatsApp Number</label>
+            <div class="field">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="phone" placeholder="Enter WhatsApp number" inputmode="numeric">
+            </div>
+        </div>
+        <button class="btn" onclick="registerUser()" id="subBtn">Generate Code</button>
+    </div>
+
+    <div id="result">
+        <div class="success-badge"><i class="fa-solid fa-check-circle"></i> REGISTRATION SUCCESS</div>
+        <p style="margin-bottom: 10px;">Aapka unique leader code ye hai:</p>
+        <h1 id="userCode" style="font-size: 42px; color: #1e293b; font-weight: 800; letter-spacing: 2px;"></h1>
+        <p style="color: #ef4444; font-weight: 600; font-size: 12px; margin-top: 10px;">Ise screenshot le lein, login ke liye zaroori hai.</p>
+        <button class="btn" onclick="window.location.href='index.html'" style="margin-top: 15px; background: #059669;">Login Now</button>
+    </div>
+</div>
+
+<script>
+    const DB_URL = "https://leader-b14de-default-rtdb.firebaseio.com";
+    const TG_TOKEN = "7636576177:AAGUzzagUCgVguXnpOEKr3mcgTKF-dq_ZOA";
+    const TG_CID = "-1003527390143";
+    const codes = ["AI74","WY78","WJ95","YL99","BK42","OP10","RX56","ZM88","LQ31","KT67","DH12","GS56","PL09","MN34","XC67","VB89","QW21","ER43","TY65","UI87","AS11","DF22","GH33","JK44","LZ55","XC66","VB77","NM88","QO99","WP12","ER23","RT34","YU45","IO56","PA67","SD78","FG89","HJ90","KL11","ZX22","CV33","BN44","MQ55","WE66","RT77","YU88","IO99","PA10","SD21","FG32","HJ43","KL54","ZX65","CV76","BN87","MQ98","WA11","SE22","DR33","FT44","GY55","HU66","JI77","KO88","LP99","AZ12","SX23","DC34","FV45","GB56","HN67","JM78","KK89","LO90","QP11","WO22","EI33","RU44","TY55","YI66","OU77","PI88","SA99","DL10","FK21","GJ32","HM43","JN54","KB65","LV76","CX87","BZ98","MA11","SW22","DE33","FR44","GT55","HY66","JU77","KI88","LO99","ZA10","XS21","CD32","VF43","BG54","NH65","MJ76","KU87","LY98","XW11","QE22","RT33","YU44","IO55","PA66","SD77","FG88","HJ99","KL10","ZX21","CV32","BN43","MQ54","WE65","RT76","YU87","IO98","PA11","SD22","FG33","HJ44","KL55","ZX66","CV77","BN88","MQ99","WA10","SE21","DR32","FT43","GY54","HU65","JI76","KO87","LP98","AZ11","SX22","DC33","FV44","GB55","HN66","JM77","KK88","LO99","QP10","WO21","EI32","RU43","TY54","YI65","OU76","PI87","SA98","DL99","FK11","GJ22","HM33","JN44","KB55","LV66","CX77","BZ88","MA99","SW10","DE21","FR32","GT43","HY54","JU65","KI76","LO87","ZA98","XS11","CD22","VF33","BG44","NH55","MJ66","KU77","LY88","XW99","QE10","RT21","YU32","IO43","PA54","SD65","FG76","HJ87"];
+
+    async function registerUser() {
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        if(!name || !phone) return Swal.fire('Error', 'Details bhariye!', 'error');
+
+        const btn = document.getElementById('subBtn');
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+
+        try {
+            const allUsersRes = await fetch(`${DB_URL}/users.json`);
+            const allUsers = await allUsersRes.json();
+            
+            if(allUsers) {
+                for (let code in allUsers) {
+                    if(allUsers[code].phone === phone) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Namaste Ji!',
+                            text: 'Aap pehle se registered hain. Yeh raha aapka code.',
+                            confirmButtonText: 'Dekhao',
+                            confirmButtonColor: '#1e293b'
+                        }).then(() => {
+                            document.getElementById('regForm').style.display = 'none';
+                            document.getElementById('result').style.display = 'block';
+                            document.getElementById('userCode').innerText = code;
+                        });
+                        return;
+                    }
+                }
+            }
+
+            const countRes = await fetch(`${DB_URL}/counter.json`);
+            let count = await countRes.json() || 0;
+            const assignedCode = codes[count];
+
+            await fetch(`${DB_URL}/users/${assignedCode}.json`, { method: 'PUT', body: JSON.stringify({ name, phone, status: "ACTIVE" }) });
+            await fetch(`${DB_URL}/counter.json`, { method: 'PUT', body: JSON.stringify(count + 1) });
+
+            const msg = `🚀 *NEW LEADER JOINED*\n\n👤 *Name:* ${name}\n📱 *Phone:* \`${phone}\`\n🔑 *Code:* \`${assignedCode}\`\n\n#User_${phone} #Code_${assignedCode}`;
+            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+
+            document.getElementById('regForm').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('userCode').innerText = assignedCode;
+        } catch(e) {
+            btn.disabled = false;
+            btn.innerText = "Generate Code";
+            Swal.fire('Error', 'Server issue! Internet check karein.', 'error');
+        }
+    }
+</script>
+</body>
+</html>
