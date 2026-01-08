@@ -104,6 +104,9 @@
             border-radius: 14px; outline: none; font-size: 16px; background: #fdfdfd; 
             color: #1e293b; transition: 0.3s;
         }
+
+        /* Capital letter dikhane ke liye CSS */
+        #lcode { text-transform: uppercase; }
         
         .field-input input:focus { border-color: #1e293b; background: #fff; box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.05); }
 
@@ -123,7 +126,6 @@
     </style>
 </head>
 <body>
-
 
     <a href="leader.html" class="get-code-box">
         <i class="fa-solid fa-bolt"></i> GET LEADER CODE
@@ -147,7 +149,7 @@
             <div class="input-group">
                 <label>Leader Code</label>
                 <div class="field-input">
-                    <input type="text" id="lcode" placeholder="ENTER SECRET CODE" required>
+                    <input type="text" id="lcode" placeholder="ENTER SECRET CODE" required oninput="this.value = this.value.toUpperCase()">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
             </div>
