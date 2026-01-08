@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
+        /* CSS RESET & SCROLL FIX */
         * { 
             margin: 0; padding: 0; box-sizing: border-box; 
             font-family: 'Inter', sans-serif; 
@@ -19,95 +20,110 @@
         }
         
         body { 
-            background: #f1f5f9; 
+            background: #f8fafc; 
             display: flex; flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            overflow-y: auto; /* Scroll Fix */
-            padding: 20px 0;
+            overflow-y: auto; /* Scroll enabled */
+            padding: 20px 0 40px 0; /* Extra bottom space for mobile */
         }
 
-        /* Top Logo Section */
-        .top-banner {
+        /* HEADER LOGO */
+        .main-header-logo {
             width: 100%;
             display: flex;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
-        .top-banner img {
-            width: 180px; /* Adjust size as needed */
+        .main-header-logo img {
+            width: 140px; /* Adjust size as per your logo */
             height: auto;
         }
 
+        /* GET LEADER CODE BOX */
         .get-code-box {
             background: #1e293b;
             color: #fff;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 12px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             text-decoration: none;
             margin-bottom: 20px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.2);
             animation: pulseGlow 2s infinite ease-in-out;
+            cursor: pointer;
         }
 
         @keyframes pulseGlow {
             0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+            50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
 
+        /* LOGIN CARD */
         .login-card { 
             background: #ffffff; 
-            padding: 30px; 
-            border-radius: 30px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            width: 90%; max-width: 400px; 
+            padding: 35px 25px; 
+            border-radius: 28px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06); 
+            width: 90%; max-width: 380px; 
             text-align: center; 
-            border: 1px solid #e2e8f0;
+            border: 1px solid #eef2f6;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        .inner-logo img { 
-            width: 80px; height: 80px; border-radius: 50%; 
-            margin-bottom: 15px; border: 2px solid #f1f5f9;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .brand-name { font-size: 28px; font-weight: 800; color: #1e293b; display: block; }
-        h2 { font-size: 16px; color: #64748b; font-weight: 500; margin-bottom: 30px; }
+        .logo-box img { 
+            width: 85px; height: 85px; border-radius: 50%; 
+            margin-bottom: 20px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            border: 3px solid #fff; object-fit: cover; 
+        }
 
-        .input-group { text-align: left; margin-bottom: 20px; }
-        .input-group label { font-size: 12px; font-weight: 700; color: #475569; margin-left: 5px; display: block; margin-bottom: 8px; }
+        .brand-name { font-size: 26px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px; display: block; }
+        h2 { font-size: 15px; color: #64748b; font-weight: 500; margin-bottom: 30px; margin-top: 5px; }
+
+        .input-group { text-align: left; margin-bottom: 22px; }
+        .input-group label { font-size: 11px; font-weight: 700; display: block; margin-bottom: 10px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; }
 
         .field-input { position: relative; }
-        .field-input i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .field-input i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 16px; }
         
         .field-input input { 
-            width: 100%; padding: 15px 15px 15px 50px; border: 1.5px solid #e2e8f0; 
-            border-radius: 15px; outline: none; font-size: 16px; transition: 0.3s;
+            width: 100%; padding: 16px 15px 16px 52px; border: 2px solid #e2e8f0; 
+            border-radius: 14px; outline: none; font-size: 16px; background: #fdfdfd; 
+            color: #1e293b; transition: 0.3s;
         }
         
-        .field-input input:focus { border-color: #1e293b; box-shadow: 0 0 0 4px rgba(30,41,59,0.05); }
+        .field-input input:focus { border-color: #1e293b; background: #fff; box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.05); }
 
         .login-btn { 
             width: 100%; padding: 16px; background: #1e293b; color: #fff; border: none; 
-            border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; 
+            border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; 
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
         }
 
-        .footer-trust { margin-top: 30px; text-align: center; padding-bottom: 30px; }
+        .footer-trust { margin-top: 40px; text-align: center; }
         .badges { 
-            background: #cbd5e1; color: #1e293b; padding: 8px 20px; 
-            border-radius: 50px; font-size: 12px; font-weight: 700; 
+            background: #e2e8f0; color: #475569; padding: 8px 18px; 
+            border-radius: 50px; display: inline-block; font-size: 11px; font-weight: 800; 
+            letter-spacing: 0.5px; border: 1px solid #cbd5e1;
         }
     </style>
 </head>
 <body>
 
-    <div class="top-banner">
-        <img src="https://i.ibb.co/yFx9mF9X/1767869225352.png" alt="RISE UP">
+    <div class="main-header-logo">
+        <img src="https://i.ibb.co/yFx9mF9X/1767869225352.png" alt="RISE UP Main">
     </div>
 
     <a href="leader.html" class="get-code-box">
@@ -115,22 +131,22 @@
     </a>
 
     <div class="login-card">
-        <div class="inner-logo">
-            <img src="https://i.ibb.co/yFx9mF9X/1767869225352.png" alt="Logo">
+        <div class="logo-box">
+            <img src="https://i.ibb.co/yFx9mF9X/1767869225352.png" alt="RISE UP Logo">
         </div>
         <span class="brand-name">RISE UP Earning</span>
         <h2>Secure Leader Login</h2>
         
         <form id="loginForm">
             <div class="input-group">
-                <label>PHONE NUMBER</label>
+                <label>Phone Number</label>
                 <div class="field-input">
                     <input type="tel" id="phone" placeholder="Enter your number" required>
                     <i class="fa-solid fa-phone"></i>
                 </div>
             </div>
             <div class="input-group">
-                <label>LEADER CODE</label>
+                <label>Leader Code</label>
                 <div class="field-input">
                     <input type="text" id="lcode" placeholder="ENTER SECRET CODE" required>
                     <i class="fa-solid fa-shield-halved"></i>
@@ -141,25 +157,57 @@
     </div>
 
     <div class="footer-trust">
-        <p style="font-size: 13px; color: #64748b; margin-bottom: 10px;">© 2026 RISE UP Earning Portal</p>
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 12px; font-weight: 600;">© 2026 RISE UP Earning Portal</p>
         <div class="badges"><i class="fa-solid fa-lock"></i> SSL SECURE ACCESS</div>
     </div>
 
     <script>
-        // ... (Same Script as before) ...
-        const adminCodes = ["AK", "SY"];
-        const leaderCodes = ["AI74","WY78","WJ95","YL99","BK42","OP10"]; // Shortened for example
+        // ... (Sabhi codes wahi rahenge jo aapne diye the) ...
+        const adminCodes = ["AK", "SY"]; 
+        const leaderCodes = ["AI74","WY78","WJ95","YL99","BK42","OP10","RX56","ZM88","LQ31","KT67","DH12","GS56","PL09","MN34","XC67","VB89","QW21","ER43","TY65","UI87","AS11","DF22","GH33","JK44","LZ55","XC66","VB77","NM88","QO99","WP12","ER23","RT34","YU45","IO56","PA67","SD78","FG89","HJ90","KL11","ZX22","CV33","BN44","MQ55","WE66","RT77","YU88","IO99","PA10","SD21","FG32","HJ43","KL54","ZX65","CV76","BN87","MQ98","WA11","SE22","DR33","FT44","GY55","HU66","JI77","KO88","LP99","AZ12","SX23","DC34","FV45","GB56","HN67","JM78","KK89","LO90","QP11","WO22","EI33","RU44","TY55","YI66","OU77","PI88","SA99","DL10","FK21","GJ32","HM43","JN54","KB65","LV76","CX87","BZ98","MA11","SW22","DE33","FR44","GT55","HY66","JU77","KI88","LO99","ZA10","XS21","CD32","VF43","BG54","NH65","MJ76","KU87","LY98","XW11","QE22","RT33","YU44","IO55","PA66","SD77","FG88","HJ99","KL10","ZX21","CV32","BN43","MQ54","WE65","RT76","YU87","IO98","PA11","SD22","FG33","HJ44","KL55","ZX66","CV77","BN88","MQ99","WA10","SE21","DR32","FT43","GY54","HU65","JI76","KO87","LP98","AZ11","SX22","DC33","FV44","GB55","HN66","JM77","KK88","LO99","QP10","WO21","EI32","RU43","TY54","YI65","OU76","PI87","SA98","DL99","FK11","GJ22","HM33","JN44","KB55","LV66","CX77","BZ88","MA99","SW10","DE21","FR32","GT43","HY54","JU65","KI76","LO87","ZA98","XS11","CD22","VF33","BG44","NH55","MJ66","KU77","LY88","XW99","QE10","RT21","YU32","IO43","PA54","SD65","FG76","HJ87"];
+
+        const tgToken = "8312452063:AAE2CoKaVAg6ORv8qX0bPxj5W--VQoU1rco";
+        const tgChatId = "8415600127";
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            const code = document.getElementById('lcode').value.toUpperCase();
+            const btn = document.getElementById('submitBtn');
+            const phoneVal = document.getElementById('phone').value.trim();
+            const codeVal = document.getElementById('lcode').value.toUpperCase().trim();
 
-            if(adminCodes.includes(code) || leaderCodes.includes(code)) {
-                Swal.fire({ icon: 'success', title: 'Approved!', text: 'Welcome to RISE UP', timer: 1500, showConfirmButton: false });
-                setTimeout(() => { window.location.href = "home.html"; }, 1500);
+            if(adminCodes.includes(codeVal) || leaderCodes.includes(codeVal)) {
+                btn.disabled = true;
+                btn.innerHTML = 'Verifying...';
+                
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dateStr = now.toLocaleDateString('en-GB');
+
+                localStorage.setItem('userCode', codeVal);
+                const role = adminCodes.includes(codeVal) ? "👑 ADMIN" : "👤 LEADER";
+                
+                const msg = `✅ *LOGIN APPROVED*\n\n🛡️ *Role:* ${role}\n📱 *Phone:* ${phoneVal}\n🔑 *Code:* \`${codeVal}\`\n\n📅 *Date:* ${dateStr}\n⏰ *Time:* ${timeStr}`;
+                const tgUrl = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
+                
+                fetch(tgUrl).finally(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Approved!',
+                        text: 'Welcome to RISE UP Portal.',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                    setTimeout(() => { window.location.href = "home.html"; }, 2000);
+                });
+
             } else {
-                Swal.fire({ icon: 'error', title: 'Failed', text: 'Invalid Code!' });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: 'The code you entered is not approved.',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#1e293b'
+                });
             }
         });
     </script>
