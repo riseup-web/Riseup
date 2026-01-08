@@ -6,6 +6,10 @@
     <title>RISE UP Earning | Official Portal</title>
     
     <link rel="icon" type="image/png" href="https://i.ibb.co/yFx9mF9X/1767869225352.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/yFx9mF9X/1767869225352.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
@@ -24,9 +28,19 @@
             display: flex; flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            overflow-y: auto; /* Scroll enabled */
-            padding: 20px 0 40px 0; /* Extra bottom space for mobile */
+            overflow-y: auto; 
+            padding: 20px 0 40px 0; 
+        }
 
+        /* LOGO TOP FIX */
+        .main-header-logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .main-header-logo img {
+            width: 140px; /* Bada logo upar */
+            height: auto;
+        }
 
         /* GET LEADER CODE BOX */
         .get-code-box {
@@ -150,7 +164,6 @@
     </div>
 
     <script>
-        // ... (Sabhi codes wahi rahenge jo aapne diye the) ...
         const adminCodes = ["AK", "SY"]; 
         const leaderCodes = ["AI74","WY78","WJ95","YL99","BK42","OP10","RX56","ZM88","LQ31","KT67","DH12","GS56","PL09","MN34","XC67","VB89","QW21","ER43","TY65","UI87","AS11","DF22","GH33","JK44","LZ55","XC66","VB77","NM88","QO99","WP12","ER23","RT34","YU45","IO56","PA67","SD78","FG89","HJ90","KL11","ZX22","CV33","BN44","MQ55","WE66","RT77","YU88","IO99","PA10","SD21","FG32","HJ43","KL54","ZX65","CV76","BN87","MQ98","WA11","SE22","DR33","FT44","GY55","HU66","JI77","KO88","LP99","AZ12","SX23","DC34","FV45","GB56","HN67","JM78","KK89","LO90","QP11","WO22","EI33","RU44","TY55","YI66","OU77","PI88","SA99","DL10","FK21","GJ32","HM43","JN54","KB65","LV76","CX87","BZ98","MA11","SW22","DE33","FR44","GT55","HY66","JU77","KI88","LO99","ZA10","XS21","CD32","VF43","BG54","NH65","MJ76","KU87","LY98","XW11","QE22","RT33","YU44","IO55","PA66","SD77","FG88","HJ99","KL10","ZX21","CV32","BN43","MQ54","WE65","RT76","YU87","IO98","PA11","SD22","FG33","HJ44","KL55","ZX66","CV77","BN88","MQ99","WA10","SE21","DR32","FT43","GY54","HU65","JI76","KO87","LP98","AZ11","SX22","DC33","FV44","GB55","HN66","JM77","KK88","LO99","QP10","WO21","EI32","RU43","TY54","YI65","OU76","PI87","SA98","DL99","FK11","GJ22","HM33","JN44","KB55","LV66","CX77","BZ88","MA99","SW10","DE21","FR32","GT43","HY54","JU65","KI76","LO87","ZA98","XS11","CD22","VF33","BG44","NH55","MJ66","KU77","LY88","XW99","QE10","RT21","YU32","IO43","PA54","SD65","FG76","HJ87"];
 
@@ -178,24 +191,11 @@
                 const tgUrl = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
                 
                 fetch(tgUrl).finally(() => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Approved!',
-                        text: 'Welcome to RISE UP Portal.',
-                        showConfirmButton: false,
-                        timer: 2000
-                    });
+                    Swal.fire({ icon: 'success', title: 'Approved!', text: 'Welcome to RISE UP Portal.', showConfirmButton: false, timer: 2000 });
                     setTimeout(() => { window.location.href = "home.html"; }, 2000);
                 });
-
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed',
-                    text: 'The code you entered is not approved.',
-                    confirmButtonText: 'Try Again',
-                    confirmButtonColor: '#1e293b'
-                });
+                Swal.fire({ icon: 'error', title: 'Login Failed', text: 'Invalid Code!', confirmButtonColor: '#1e293b' });
             }
         });
     </script>
