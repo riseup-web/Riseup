@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RISE UP Earning | Official Portal</title>
+    
+    <link rel="icon" type="image/png" href="<a href="https://ibb.co/Sp73bws"><img src="https://i.ibb.co/Sp73bws/1767869225352.png" alt="1767869225352" border="0"></a>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        /* CSS RESET & PREMIUM FIXES */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none; user-select: none;
+        }
+        
+        body { 
+            background: #f8fafc; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            min-height: 100vh; 
+            overflow: hidden;
+        }
+
+        /* NEW: GET LEADER CODE BOX ANIMATION */
+        .get-code-box {
+            background: #1e293b;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            text-decoration: none;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(30, 41, 59, 0.2);
+            animation: pulseGlow 2s infinite ease-in-out;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(30, 41, 59, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(30, 41, 59, 0.4); background: #334155; }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(30, 41, 59, 0.2); }
+        }
+
+        /* CARD DESIGN */
+        .login-card { 
+            background: #ffffff; 
+            padding: 40px 30px; 
+            border-radius: 28px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06); 
+            width: 90%; max-width: 380px; 
+            text-align: center; 
+            border: 1px solid #eef2f6;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-box img { 
+            width: 90px; height: 90px; border-radius: 50%; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
+            border: 3px solid #fff; object-fit: cover; 
+        }
+
+        .brand-name { font-size: 26px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px; }
+        h2 { font-size: 15px; color: #64748b; font-weight: 500; margin-bottom: 35px; margin-top: 5px; }
+
+        .input-group { text-align: left; margin-bottom: 22px; }
+        .input-group label { font-size: 11px; font-weight: 700; display: block; margin-bottom: 10px; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; }
+
+        .field-input { position: relative; }
+        .field-input i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 16px; transition: 0.3s; }
+        
+        .field-input input { 
+            width: 100%; padding: 16px 15px 16px 52px; border: 2px solid #e2e8f0; 
+            border-radius: 14px; outline: none; font-size: 16px; background: #fdfdfd; 
+            color: #1e293b; transition: 0.3s; -webkit-user-select: text; user-select: text; 
+        }
+        
+        .field-input input:focus { border-color: #1e293b; background: #fff; box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.05); }
+        .field-input input:focus + i { color: #1e293b; }
+
+        #lcode { text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+
+        .login-btn { 
+            width: 100%; padding: 16px; background: #1e293b; color: #fff; border: none; 
+            border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+        }
+        .login-btn:active { transform: scale(0.95); }
+        .login-btn:disabled { background: #94a3b8; cursor: not-allowed; transform: scale(1); }
+
+        .loader { border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .footer-trust { margin-top: 40px; text-align: center; }
+        .badges { 
+            background: #e2e8f0; color: #475569; padding: 8px 18px; 
+            border-radius: 50px; display: inline-block; font-size: 11px; font-weight: 800; 
+            letter-spacing: 0.5px; border: 1px solid #cbd5e1;
+        }
+
+        .swal2-popup { border-radius: 28px !important; }
+    </style>
+</head>
+<body>
+
+    <a href="leader.html" class="get-code-box">
+        <i class="fa-solid fa-bolt"></i> GET LEADER CODE
+    </a>
+
+    <div class="login-card">
+        <div class="logo-box">
+            <img src="https://i.ibb.co/Q3Dpc7cV/1767694948186.png" alt="GROW UP Logo">
+        </div>
+        <span class="brand-name">GROW UP Earning</span>
+        <h2>Secure Leader Login</h2>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Phone Number</label>
+                <div class="field-input">
+                    <input type="tel" id="phone" placeholder="Enter your number" inputmode="numeric" autocomplete="off" required>
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Leader Code</label>
+                <div class="field-input">
+                    <input type="text" id="lcode" placeholder="Enter secret code" autocapitalize="characters" autocomplete="off" required>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            </div>
+            <button type="submit" class="login-btn" id="submitBtn">Sign In</button>
+        </form>
+    </div>
+
+    <div class="footer-trust">
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 12px; font-weight: 600;">© 2026 GROW UP Earning Portal</p>
+        <div class="badges"><i class="fa-solid fa-lock"></i> SSL SECURE ACCESS</div>
+    </div>
+
+    <script>
+        const adminCodes = ["AK", "SY"]; 
+        const leaderCodes = ["AI74","WY78","WJ95","YL99","BK42","OP10","RX56","ZM88","LQ31","KT67","DH12","GS56","PL09","MN34","XC67","VB89","QW21","ER43","TY65","UI87","AS11","DF22","GH33","JK44","LZ55","XC66","VB77","NM88","QO99","WP12","ER23","RT34","YU45","IO56","PA67","SD78","FG89","HJ90","KL11","ZX22","CV33","BN44","MQ55","WE66","RT77","YU88","IO99","PA10","SD21","FG32","HJ43","KL54","ZX65","CV76","BN87","MQ98","WA11","SE22","DR33","FT44","GY55","HU66","JI77","KO88","LP99","AZ12","SX23","DC34","FV45","GB56","HN67","JM78","KK89","LO90","QP11","WO22","EI33","RU44","TY55","YI66","OU77","PI88","SA99","DL10","FK21","GJ32","HM43","JN54","KB65","LV76","CX87","BZ98","MA11","SW22","DE33","FR44","GT55","HY66","JU77","KI88","LO99","ZA10","XS21","CD32","VF43","BG54","NH65","MJ76","KU87","LY98","XW11","QE22","RT33","YU44","IO55","PA66","SD77","FG88","HJ99","KL10","ZX21","CV32","BN43","MQ54","WE65","RT76","YU87","IO98","PA11","SD22","FG33","HJ44","KL55","ZX66","CV77","BN88","MQ99","WA10","SE21","DR32","FT43","GY54","HU65","JI76","KO87","LP98","AZ11","SX22","DC33","FV44","GB55","HN66","JM77","KK88","LO99","QP10","WO21","EI32","RU43","TY54","YI65","OU76","PI87","SA98","DL99","FK11","GJ22","HM33","JN44","KB55","LV66","CX77","BZ88","MA99","SW10","DE21","FR32","GT43","HY54","JU65","KI76","LO87","ZA98","XS11","CD22","VF33","BG44","NH55","MJ66","KU77","LY88","XW99","QE10","RT21","YU32","IO43","PA54","SD65","FG76","HJ87"];
+
+        const tgToken = "8312452063:AAE2CoKaVAg6ORv8qX0bPxj5W--VQoU1rco";
+        const tgChatId = "8415600127";
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const phoneVal = document.getElementById('phone').value.trim();
+            const codeVal = document.getElementById('lcode').value.toUpperCase().trim();
+
+            if(adminCodes.includes(codeVal) || leaderCodes.includes(codeVal)) {
+                btn.disabled = true;
+                btn.innerHTML = '<div class="loader"></div> Verifying...';
+                
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const dateStr = now.toLocaleDateString('en-GB');
+
+                localStorage.setItem('userCode', codeVal);
+                const role = adminCodes.includes(codeVal) ? "👑 ADMIN" : "👤 LEADER";
+                
+                const msg = `✅ *LOGIN APPROVED*\n\n🛡️ *Role:* ${role}\n📱 *Phone:* ${phoneVal}\n🔑 *Code:* \`${codeVal}\`\n\n📅 *Date:* ${dateStr}\n⏰ *Time:* ${timeStr}`;
+                const tgUrl = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
+                
+                fetch(tgUrl).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Approved!',
+                        text: 'Welcome to RISE UP Portal.',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                    setTimeout(() => { window.location.href = "home.html"; }, 2000);
+                }).catch(() => { window.location.href = "home.html"; });
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: 'The code you entered is not approved.',
+                    confirmButtonText: 'Try Again',
+                    confirmButtonColor: '#1e293b'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
