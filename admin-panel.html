@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISE UP | Master Admin Control</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f1f5f9; color: #1e293b; padding: 15px; }
+        
+        .container { max-width: 1000px; margin: auto; }
+        
+        /* Header */
+        .admin-header { background: #1e293b; color: white; padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        /* Cards */
+        .card { background: white; padding: 20px; border-radius: 18px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        h2 { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        
+        /* Inputs */
+        input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 14px; outline: none; }
+        input:focus, textarea:focus { border-color: #1e293b; }
+        textarea { height: 100px; resize: none; }
+        
+        /* Buttons */
+        .btn { background: #1e293b; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #334155; }
+        .btn-save { background: #10b981; padding: 6px 12px; width: auto; font-size: 12px; }
+
+        /* Table */
+        .table-res { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; background: #f8fafc; padding: 12px; font-size: 11px; color: #64748b; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 600; }
+        
+        /* Search Box */
+        .search-box { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="admin-header">
+            <h1><i class="fa-solid fa-user-shield"></i> Master Control</h1>
+            <p>Admin Portal - Realtime Database Access</p>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-plus-circle"></i> Bulk Add Leads (ID System)</h2>
+            <input type="text" id="leadGroupId" placeholder="Assign Lead ID (e.g. 5566, L101)">
+            <textarea id="numList" placeholder="Paste Numbers here (One number per line)"></textarea>
+            <button class="btn" onclick="saveLeads()"><i class="fa-solid fa-upload"></i> Upload Lead Group</button>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-list-check"></i> Manage User Claims</h2>
+            <div class="search-box">
+                <input type="text" id="adminSearch" placeholder="Search by Leader Code or Phone..." onkeyup="filterClaims()">
+            </div>
+            <div class="table-res">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Leader</th>
+                            <th>Phone</th>
+                            <th>Portal</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="claimTable">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config (Aapke original URL ke sath)
+        const firebaseConfig = {
+            databaseURL: "https://data-claim-69ed0-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 1. LEAD UPLOAD LOGIC
+        function saveLeads() {
+            const id = document.getElementById('leadGroupId').value.trim();
+            const text = document.getElementById('numList').value.trim();
+            
+            if(!id || !text) return Swal.fire('Error', 'ID aur Numbers dono fill karein!', 'error');
+
+            const numbers = text.split('\n').map(n => n.trim()).filter(n => n !== "");
+
+            database.ref('lead_groups/' + id).set({
+                leads: numbers,
+                date: new Date().toLocaleDateString()
+            }).then(() => {
+                Swal.fire('Uploaded!', `Lead ID ${id} mein ${numbers.length} numbers save ho gaye.`, 'success');
+                document.getElementById('leadGroupId').value = "";
+                document.getElementById('numList').value = "";
+            });
+        }
+
+        // 2. DATA CLAIMS LOADING LOGIC
+        function loadClaims() {
+            database.ref('claims').on('value', (snapshot) => {
+                const data = snapshot.val();
+                const tableBody = document.getElementById('claimTable');
+                tableBody.innerHTML = "";
+
+                if(!data) {
+                    tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Koi data nahi mila.</td></tr>";
+                    return;
+                }
+
+                Object.keys(data).reverse().forEach(key => {
+                    const row = data[key];
+                    tableBody.innerHTML += `
+                        <tr class="claim-row">
+                            <td>${row.owner || 'N/A'}</td>
+                            <td>${row.number || 'N/A'}</td>
+                            <td>${row.portal || 'N/A'}</td>
+                            <td>
+                                <select id="st-${key}" style="padding:4px; font-size:12px;">
+                                    <option value="WAIT" ${row.status === 'WAIT' ? 'selected' : ''}>WAIT</option>
+                                    <option value="APPROVED" ${row.status === 'APPROVED' ? 'selected' : ''}>APPROVE</option>
+                                    <option value="DISAPPROVED" ${row.status === 'DISAPPROVED' ? 'selected' : ''}>REJECT</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-save" onclick="updateStatus('${key}')">Save</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function updateStatus(key) {
+            const newStatus = document.getElementById('st-' + key).value;
+            database.ref('claims/' + key).update({
+                status: newStatus
+            }).then(() => {
+                Swal.fire({ title: 'Status Saved!', icon: 'success', timer: 1000, showConfirmButton: false });
+            });
+        }
+
+        function filterClaims() {
+            const input = document.getElementById('adminSearch').value.toUpperCase();
+            const rows = document.querySelectorAll('.claim-row');
+            rows.forEach(row => {
+                const text = row.innerText.toUpperCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+
+        window.onload = loadClaims;
+    </script>
+</body>
+</html>
