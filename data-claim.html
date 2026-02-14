@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RISE UP| Professional Claim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* --- Tera Original Style (No Changes) --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        /* --- Sabhi Styles Jo Aapne Diye The (Original) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f8f9fa; color: #1a1a1a; overflow-x: hidden; }
         header { background: #fff; padding: 18px 25px; display: flex; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
         .back-btn { font-size: 20px; cursor: pointer; color: #333; text-decoration: none; }
@@ -25,16 +26,15 @@
         .btn-main { width: 100%; background: #1a1a1a; color: #fff; border: none; padding: 18px; border-radius: 18px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         #leaderSection { display: none; margin-top: 20px; animation: fadeInUp 0.5s cubic-bezier(0.2, 1, 0.3, 1); }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .portal-label { font-size: 38px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: #000; }
-        .phone-label { font-size: 20px; font-weight: 700; color: #444; margin-bottom: 30px; }
+        .portal-label { font-size: 38px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; color: #000; text-align: center; }
+        .phone-label { font-size: 20px; font-weight: 700; color: #444; margin-bottom: 30px; text-align: center; }
+        
+        /* Bottom Sheet & Modals */
         .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: none; z-index: 1000; backdrop-filter: blur(3px); }
         .bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; background: #fff; border-radius: 30px 30px 0 0; padding: 25px; z-index: 1001; transition: 0.4s cubic-bezier(0.1, 0.7, 0.1, 1); max-height: 70vh; overflow-y: auto; }
         .bottom-sheet.active { bottom: 0; }
         .sheet-handle { width: 40px; height: 5px; background: #e0e0e0; border-radius: 10px; margin: 0 auto 25px; }
         .portal-item { padding: 18px 20px; border-radius: 16px; margin-bottom: 8px; font-weight: 700; font-size: 17px; color: #333; display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; cursor: pointer; }
-        .success-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); background: #fff; padding: 40px 30px; border-radius: 32px; width: 85%; max-width: 340px; text-align: center; z-index: 2000; display: none; opacity: 0; transition: 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.28); box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-        .success-modal.show { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        .success-modal .icon-circle { width: 80px; height: 80px; background: #2ecc71; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 25px; }
     </style>
 </head>
 <body>
@@ -53,7 +53,7 @@
                 <i class="fa-solid fa-chevron-down" style="font-size: 14px; color: #999;"></i>
             </div>
             <input type="number" class="input-field" id="clientPhone" placeholder="Client Mobile Number">
-            <button class="btn-main" onclick="processSearch()">Claim</button>
+            <button class="btn-main" onclick="processSearch()">Claim Now</button>
         </div>
 
         <div id="leaderSection" class="card">
@@ -61,11 +61,11 @@
             <p class="phone-label" id="resPhone">0000000000</p>
             <div style="height: 1.5px; background: #f0f0f0; margin-bottom: 30px;"></div>
             <p style="text-align:left; font-weight:800; margin-bottom:20px; font-size: 18px;">
-                <i class="fa-solid fa-user-shield" style="margin-right:8px; color:#1a1a1a;"></i> Claim This Client
+                <i class="fa-solid fa-user-shield" style="margin-right:8px; color:#1a1a1a;"></i> Confirm Ownership
             </p>
             <input type="text" class="input-field" id="leaderCode" placeholder="Enter Leader Code">
-            <input type="number" class="input-field" id="leaderPhone" placeholder="Your Phone Number">
-            <button class="btn-main" onclick="saveClaimToDatabase()">Add Me as Owner</button>
+            <input type="number" class="input-field" id="leaderPhone" placeholder="Your WhatsApp Number">
+            <button class="btn-main" id="finalClaimBtn" onclick="saveClaimToDatabase()">Add Me as Owner</button>
         </div>
     </main>
 
@@ -80,16 +80,10 @@
         <div class="portal-item" onclick="setPortal('Airtel Bank')">Airtel Bank <i class="fa-solid fa-circle-check"></i></div>
     </div>
 
-    <div class="success-modal" id="successMod">
-        <div class="icon-circle"><i class="fa-solid fa-check"></i></div>
-        <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 10px;">Success!</h3>
-        <p style="color: #7f8c8d; font-weight: 600; margin-bottom: 30px; line-height: 1.5;">Claim successful. Please check your dashboard.</p>
-        <button class="btn-main" onclick="window.location.href='home.html'">OK</button>
-    </div>
-
     <script>
+        // --- NAYA FIREBASE CONFIG (UPATED) ---
         const firebaseConfig = {
-            databaseURL: "https://data-claim-69ed0-default-rtdb.firebaseio.com/"
+            databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
         };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
@@ -113,7 +107,10 @@
         function processSearch() {
             const portal = document.getElementById('portalVal').innerText;
             const phone = document.getElementById('clientPhone').value;
-            if(portal === "Select Portal" || !phone) { alert("Please fill all details!"); return; }
+            if(portal === "Select Portal" || !phone) { 
+                Swal.fire('Error', 'Sahi details bharo bhai!', 'error'); 
+                return; 
+            }
             document.getElementById('resPortal').innerText = portal;
             document.getElementById('resPhone').innerText = phone;
             document.getElementById('searchBox').style.display = 'none';
@@ -122,33 +119,48 @@
         }
 
         function saveClaimToDatabase() {
-            const btn = document.querySelector("#leaderSection .btn-main");
+            const btn = document.getElementById('finalClaimBtn');
             const leaderCode = document.getElementById('leaderCode').value.trim().toUpperCase();
             const leaderPhone = document.getElementById('leaderPhone').value.trim();
             const portalName = document.getElementById('resPortal').innerText;
             const clientNumber = document.getElementById('resPhone').innerText;
 
-            if(!leaderCode || !leaderPhone) { alert("Please enter leader details!"); return; }
+            if(!leaderCode || !leaderPhone) { 
+                Swal.fire('Incomplete', 'Leader details zaroori hain!', 'warning'); 
+                return; 
+            }
 
-            // Double message rokne ke liye
             btn.disabled = true;
-            btn.innerText = "Processing...";
+            btn.innerText = "Claiming...";
 
-            // Unique ID for Telegram & Firebase Sync
-            const orderId = "ID" + Date.now(); 
+            // Unique ID for Sync
+            const orderId = "RU" + Date.now(); 
 
+            // 1. Save to NAYA Firebase
             database.ref('claims/' + orderId).set({
                 owner: leaderCode,
                 number: clientNumber,
                 portal: portalName,
                 status: "WAIT",
-                leaderPhone: leaderPhone
+                leaderPhone: leaderPhone,
+                timestamp: Date.now()
             }).then(() => {
+                // 2. Send to Telegram Bot
                 sendToBot(leaderCode, clientNumber, portalName, orderId);
-                document.getElementById('sheetOverlay').style.display = 'block';
-                document.getElementById('successMod').classList.add('show');
+                
+                // 3. Success Alert
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Aapka claim submit ho gaya hai. Dashboard check karein.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#1a1a1a'
+                }).then(() => {
+                    window.location.href = 'home.html';
+                });
+
             }).catch(err => {
-                alert("Database Error: " + err.message);
+                Swal.fire('Error', 'Naya database check karein: ' + err.message, 'error');
                 btn.disabled = false;
                 btn.innerText = "Add Me as Owner";
             });
@@ -157,22 +169,28 @@
         function sendToBot(leader, client, portal, orderId) {
             const botToken = "8539942002:AAHSMqLzmFLo4ucq6FNE0TaiWVyzpskYA6w";
             const chatId = "8415600127";
-            const text = `📥 *Naya Claim Aaya Hai!*\n\n👤 *Leader:* ${leader}\n🔢 *Client:* ${client}\n🏦 *Portal:* ${portal}\n⏳ *Status:* WAIT`;
             
-            // Sahi callback_data format
+            const messageText = `📥 *Naya Claim Request!*\n\n👤 *Leader:* ${leader}\n🔢 *Client:* ${client}\n🏦 *Portal:* ${portal}\n🆔 *ID:* ${orderId}\n⏳ *Status:* WAIT`;
+            
+            // Ye Buttons aapke Admin Panel ke callback logic se connect hain
             const keyboard = {
                 inline_keyboard: [[
                     { text: "✅ Approve", callback_data: `approve_${orderId}` },
-                    { text: "❌ Disapprove", callback_data: `disapprove_${orderId}` }
+                    { text: "❌ Reject", callback_data: `disapprove_${orderId}` }
                 ]]
             };
 
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown', reply_markup: keyboard })
+                body: JSON.stringify({ 
+                    chat_id: chatId, 
+                    text: messageText, 
+                    parse_mode: 'Markdown', 
+                    reply_markup: keyboard 
+                })
             });
         }
     </script>
 </body>
-            </html>
+</html>
