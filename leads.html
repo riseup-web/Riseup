@@ -2,73 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RISE UP | Get Leads</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; padding: 20px; text-align: center; }
-        .container { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; box-sizing: border-box; }
-        .btn-fetch { background: #1e293b; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; font-size: 16px; }
-        #results { margin-top: 25px; display: none; text-align: left; }
-        .lead-row { background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-        .copy-btn { color: #2563eb; cursor: pointer; font-size: 14px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        
+        .leads-card { 
+            background: #ffffff; 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 30px 20px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            text-align: center;
+            border: 1px solid #eef2f6;
+        }
+
+        .icon-box { 
+            width: 70px; height: 70px; background: #1e293b; color: white; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            margin: 0 auto 20px; font-size: 30px; 
+        }
+
+        h1 { font-size: 22px; color: #1e293b; margin-bottom: 8px; font-weight: 800; }
+        p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group input { 
+            width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; 
+            outline: none; font-size: 16px; font-weight: 600; text-align: center;
+            transition: 0.3s;
+        }
+        .input-group input:focus { border-color: #1e293b; }
+
+        .unlock-btn { 
+            width: 100%; padding: 16px; background: #1e293b; color: white; 
+            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; 
+            font-size: 16px; transition: 0.3s;
+        }
+        .unlock-btn:active { transform: scale(0.98); }
+
+        /* Leads List Styling */
+        #resultsArea { margin-top: 30px; display: none; text-align: left; }
+        .lead-item { 
+            background: #f1f5f9; padding: 12px 15px; border-radius: 10px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; 
+            align-items: center; border: 1px solid #e2e8f0;
+        }
+        .lead-num { font-weight: 700; color: #1e293b; font-size: 15px; }
+        .copy-icon { color: #1e293b; cursor: pointer; padding: 5px; }
+
+        .back-link { margin-top: 20px; display: block; color: #64748b; text-decoration: none; font-size: 13px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <i class="fa-solid fa-users-viewfinder" style="font-size: 40px; color: #1e293b; margin-bottom: 15px;"></i>
-    <h2>Get Leads</h2>
-    <p style="color: #64748b; margin-bottom: 20px;">Enter your Lead ID to view numbers</p>
-    
-    <input type="text" id="customerInput" placeholder="ENTER LEAD ID">
-    <button class="btn-fetch" onclick="fetchGroupLeads()">View Leads</button>
+<div class="leads-card">
+    <div class="icon-box"><i class="fa-solid fa-unlock-keyhole"></i></div>
+    <h1>Unlock Leads</h1>
+    <p>Admin se mili hui Secret Lead ID yahan dalein</p>
 
-    <div id="results">
-        <h4 style="margin-bottom: 15px; color: #1e293b;">Your Leads List:</h4>
-        <div id="leadList"></div>
+    <div class="input-group">
+        <input type="text" id="leadIdInput" placeholder="Enter Lead ID (e.g. 7788)">
     </div>
+    <button class="unlock-btn" onclick="getLeads()">Get My Numbers</button>
+
+    <div id="resultsArea">
+        <h3 style="font-size: 14px; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-list-ol"></i> Your Numbers List:
+        </h3>
+        <div id="leadsList"></div>
+    </div>
+
+    <a href="home.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
 </div>
 
 <script>
-    const firebaseConfig = { databaseURL: "https://data-claim-69ed0-default-rtdb.firebaseio.com/" };
+    // --- NAYA FIREBASE CONNECTION ---
+    const firebaseConfig = {
+        databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
+    };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    function fetchGroupLeads() {
-        const id = document.getElementById('customerInput').value.trim();
-        if(!id) return alert("Pehle ID toh daalo!");
+    function getLeads() {
+        const id = document.getElementById('leadIdInput').value.trim();
+        const resultsArea = document.getElementById('resultsArea');
+        const listContainer = document.getElementById('leadsList');
 
+        if(!id) {
+            Swal.fire('Input Empty', 'Bhai pehle ID toh daalo!', 'warning');
+            return;
+        }
+
+        // Fetching from Firebase
         database.ref('lead_groups/' + id).once('value').then((snapshot) => {
             const data = snapshot.val();
-            const resultsDiv = document.getElementById('results');
-            const listDiv = document.getElementById('leadList');
             
             if(data && data.leads) {
-                resultsDiv.style.display = 'block';
-                listDiv.innerHTML = "";
+                resultsArea.style.display = 'block';
+                listContainer.innerHTML = "";
+                
                 data.leads.forEach((num, index) => {
-                    listDiv.innerHTML += `
-                        <div class="lead-row">
-                            <span>${index + 1}. ${num}</span>
-                            <span class="copy-btn" onclick="copyNum('${num}')"><i class="fa-regular fa-copy"></i> Copy</span>
+                    listContainer.innerHTML += `
+                        <div class="lead-item">
+                            <span class="lead-num">${index + 1}. ${num}</span>
+                            <i class="fa-solid fa-copy copy-icon" onclick="copyNum('${num}')"></i>
                         </div>
                     `;
                 });
+                Swal.fire({ icon: 'success', title: 'Success', text: 'Numbers Unlocked!', timer: 1500, showConfirmButton: false });
             } else {
-                alert("Galat ID ya Leads expire ho gayi hain!");
-                resultsDiv.style.display = 'none';
+                resultsArea.style.display = 'none';
+                Swal.fire('Not Found', 'Ye ID galat hai ya abhi tak bani nahi hai.', 'error');
             }
         });
     }
 
-    function copyNum(num) {
-        navigator.clipboard.writeText(num);
-        alert("Number copied: " + num);
+    function copyNum(text) {
+        navigator.clipboard.writeText(text);
+        // Chhota sa toast message
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        Toast.fire({ icon: 'success', title: 'Number Copied!' });
     }
 </script>
+
 </body>
 </html>
