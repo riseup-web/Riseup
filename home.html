@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* FULL CSS BLOCK */
+        /* FULL CSS BLOCK - No Changes Here */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f8fafc; color: #1a1a1a; min-height: 100vh; overflow-x: hidden; }
         
@@ -20,7 +20,6 @@
         .menu-btn { font-size: 22px; cursor: pointer; border: none; background: none; color: #1e293b; }
         header h1 { font-size: 22px; font-weight: 800; flex: 1; text-align: center; color: #1e293b; margin-right: 35px; }
 
-        /* Sidebar Styling */
         .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #fff; z-index: 1001; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; box-shadow: 15px 0 40px rgba(0,0,0,0.1); }
         .sidebar.active { left: 0; }
         .close-sidebar { font-size: 24px; cursor: pointer; color: #94a3b8; float: right; padding: 5px; }
@@ -32,7 +31,6 @@
         .nav-link:hover, .nav-link.active { background: #f1f5f9; color: #1e293b; }
         .nav-link.active { border-left: 4px solid #1e293b; }
 
-        /* Main Content */
         .main-content { padding: 25px 15px; display: flex; flex-direction: column; align-items: center; width: 100%; }
         .performance-card { background: #fff; border-radius: 25px; padding: 30px 20px; width: 100%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; text-align: center; margin-bottom: 20px; }
         .performance-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #1e293b; }
@@ -41,7 +39,6 @@
         .search-group input:focus { border-color: #1e293b; }
         .btn-search { background: #1e293b; color: #fff; border: none; padding: 16px; border-radius: 14px; width: 100%; font-weight: 700; cursor: pointer; font-size: 16px; }
 
-        /* Dashboard Data Display */
         #dashboardResults { display: none; width: 100%; max-width: 500px; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -113,25 +110,19 @@
     </main>
 
     <script>
-        // --- FIREBASE INITIALIZATION ---
+        // --- NAYA FIREBASE URL ---
         const firebaseConfig = {
             databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const database = firebase.database();
 
-        // 1. Sidebar Toggle
         function toggleNav() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('show');
         }
 
-        // 2. Leader Codes Validation List (Isme aap aur codes add kar sakte hain)
-        const validLeaderCodes = [
-            "AK", "SK", "ADMIN", "RISE01", "RU-7788", "TEAM-A", "TEAM-B", "LEADER-X"
-        ];
-
-        // 3. Search Data Logic
+        // --- FIXED SEARCH LOGIC ---
         function startSearch() {
             const inputCode = document.getElementById('leaderInput').value.trim().toUpperCase();
             const container = document.getElementById('dynamicContainer');
@@ -143,14 +134,14 @@
                 return;
             }
 
-            // Show loading state
+            // Show loading spinner
             Swal.fire({ title: 'Fetching Data...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
-            // Listen to data change in real-time
+            // Database Listener (Click hone par hi start hoga)
             database.ref('claims').on('value', (snapshot) => {
-                Swal.close();
+                Swal.close(); // Loading close
                 const data = snapshot.val();
-                resultsArea.style.display = 'block';
+                resultsArea.style.display = 'block'; // Ab results box dikhega
                 container.innerHTML = "";
 
                 if(!data) {
@@ -159,7 +150,6 @@
                     return;
                 }
 
-                // Filter logic
                 const myClaims = Object.values(data).filter(item => 
                     item.owner && item.owner.toUpperCase() === inputCode
                 );
@@ -170,14 +160,13 @@
                     container.innerHTML = `
                         <div class="portal-card" style="text-align:center;">
                             <i class="fa-solid fa-magnifying-glass" style="font-size:30px; color:#cbd5e1; margin-bottom:10px;"></i>
-                            <p style="color:#64748b;">No records found for code: <b>${inputCode}</b></p>
+                            <p style="color:#64748b;">No records found for: <b>${inputCode}</b></p>
                         </div>`;
                     return;
                 }
 
-                // Group by Portals (Automatically detects all portals)
+                // Portal wise sorting
                 const portals = [...new Set(myClaims.map(c => c.portal))];
-                
                 portals.forEach(pName => {
                     const pData = myClaims.filter(d => d.portal === pName);
                     let tableHtml = `
@@ -187,13 +176,7 @@
                                 <span style="color:#64748b; font-size:12px;">Total: ${pData.length}</span>
                             </div>
                             <table>
-                                <thead>
-                                    <tr>
-                                        <th>S.N</th>
-                                        <th>Client Number</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>S.N</th><th>Client Number</th><th>Status</th></tr></thead>
                                 <tbody>`;
                     
                     pData.forEach((row, idx) => {
@@ -209,20 +192,19 @@
                                 <td><span class="badge ${badgeClass}">${status}</span></td>
                             </tr>`;
                     });
-
                     tableHtml += `</tbody></table></div>`;
                     container.innerHTML += tableHtml;
                 });
             });
         }
 
-        // 4. Auto-load code from login/localStorage
+        // --- AUTO LOAD WITHOUT AUTO SEARCH ---
         window.onload = function() {
             const savedCode = localStorage.getItem('userCode');
             if(savedCode) {
                 document.getElementById('sideUserCode').innerText = savedCode;
                 document.getElementById('leaderInput').value = savedCode;
-                startSearch(); // Auto-search on page load
+                // Yahan se startSearch() call ko delete kar diya hai
             }
         };
     </script>
