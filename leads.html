@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISE UP | Get Leads</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; padding: 20px; text-align: center; }
+        .container { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; box-sizing: border-box; }
+        .btn-fetch { background: #1e293b; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; font-size: 16px; }
+        #results { margin-top: 25px; display: none; text-align: left; }
+        .lead-row { background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .copy-btn { color: #2563eb; cursor: pointer; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <i class="fa-solid fa-users-viewfinder" style="font-size: 40px; color: #1e293b; margin-bottom: 15px;"></i>
+    <h2>Get Leads</h2>
+    <p style="color: #64748b; margin-bottom: 20px;">Enter your Lead ID to view numbers</p>
+    
+    <input type="text" id="customerInput" placeholder="ENTER LEAD ID">
+    <button class="btn-fetch" onclick="fetchGroupLeads()">View Leads</button>
+
+    <div id="results">
+        <h4 style="margin-bottom: 15px; color: #1e293b;">Your Leads List:</h4>
+        <div id="leadList"></div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = { databaseURL: "https://data-claim-69ed0-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function fetchGroupLeads() {
+        const id = document.getElementById('customerInput').value.trim();
+        if(!id) return alert("Pehle ID toh daalo!");
+
+        database.ref('lead_groups/' + id).once('value').then((snapshot) => {
+            const data = snapshot.val();
+            const resultsDiv = document.getElementById('results');
+            const listDiv = document.getElementById('leadList');
+            
+            if(data && data.leads) {
+                resultsDiv.style.display = 'block';
+                listDiv.innerHTML = "";
+                data.leads.forEach((num, index) => {
+                    listDiv.innerHTML += `
+                        <div class="lead-row">
+                            <span>${index + 1}. ${num}</span>
+                            <span class="copy-btn" onclick="copyNum('${num}')"><i class="fa-regular fa-copy"></i> Copy</span>
+                        </div>
+                    `;
+                });
+            } else {
+                alert("Galat ID ya Leads expire ho gayi hain!");
+                resultsDiv.style.display = 'none';
+            }
+        });
+    }
+
+    function copyNum(num) {
+        navigator.clipboard.writeText(num);
+        alert("Number copied: " + num);
+    }
+</script>
+</body>
+</html>
