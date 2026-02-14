@@ -12,18 +12,18 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; transition: 0.5s; }
         
         .leads-card { 
-            background: #ffffff; 
-            width: 100%; 
-            max-width: 400px; 
-            padding: 30px 20px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            text-align: center;
-            border: 1px solid #eef2f6;
+            background: #ffffff; width: 100%; max-width: 400px; padding: 30px 20px; 
+            border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            text-align: center; border: 1px solid #eef2f6; transition: 0.3s;
         }
+
+        /* Red Mode Style */
+        body.system-off { background: #fee2e2; }
+        .system-off .leads-card { border: 2px solid #ef4444; }
+        .system-off .icon-box { background: #ef4444 !material; }
 
         .icon-box { 
             width: 70px; height: 70px; background: #1e293b; color: white; 
@@ -34,48 +34,48 @@
         h1 { font-size: 22px; color: #1e293b; margin-bottom: 8px; font-weight: 800; }
         p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
 
-        .input-group { position: relative; margin-bottom: 20px; }
         .input-group input { 
             width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; 
             outline: none; font-size: 16px; font-weight: 600; text-align: center;
-            transition: 0.3s;
         }
-        .input-group input:focus { border-color: #1e293b; }
 
         .unlock-btn { 
             width: 100%; padding: 16px; background: #1e293b; color: white; 
             border: none; border-radius: 12px; font-weight: 700; cursor: pointer; 
-            font-size: 16px; transition: 0.3s;
+            font-size: 16px; margin-top: 20px;
         }
-        .unlock-btn:active { transform: scale(0.98); }
 
-        /* Leads List Styling */
+        /* Lead Item Icons */
         #resultsArea { margin-top: 30px; display: none; text-align: left; }
         .lead-item { 
-            background: #f1f5f9; padding: 12px 15px; border-radius: 10px; 
-            margin-bottom: 10px; display: flex; justify-content: space-between; 
+            background: #f1f5f9; padding: 15px; border-radius: 12px; 
+            margin-bottom: 12px; display: flex; justify-content: space-between; 
             align-items: center; border: 1px solid #e2e8f0;
         }
-        .lead-num { font-weight: 700; color: #1e293b; font-size: 15px; }
-        .copy-icon { color: #1e293b; cursor: pointer; padding: 5px; }
+        .lead-num { font-weight: 700; color: #1e293b; font-size: 16px; }
+        .action-icons { display: flex; gap: 15px; font-size: 18px; }
+        .action-icons i { cursor: pointer; transition: 0.2s; }
+        .fa-copy { color: #64748b; }
+        .fa-whatsapp { color: #25d366; }
+        .fa-phone { color: #3b82f6; }
 
         .back-link { margin-top: 20px; display: block; color: #64748b; text-decoration: none; font-size: 13px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="leads-card">
-    <div class="icon-box"><i class="fa-solid fa-unlock-keyhole"></i></div>
-    <h1>Unlock Leads</h1>
-    <p>Admin se mili hui Secret Lead ID yahan dalein</p>
+<div class="leads-card" id="mainCard">
+    <div class="icon-box" id="mainIcon"><i class="fa-solid fa-unlock-keyhole"></i></div>
+    <h1 id="title">Unlock Leads</h1>
+    <p id="subTitle">Admin se mili hui Secret Lead ID yahan dalein</p>
 
     <div class="input-group">
         <input type="text" id="leadIdInput" placeholder="Enter Lead ID (e.g. 7788)">
     </div>
-    <button class="unlock-btn" onclick="getLeads()">Get My Numbers</button>
+    <button class="unlock-btn" id="mainBtn" onclick="getLeads()">Get My Numbers</button>
 
     <div id="resultsArea">
-        <h3 style="font-size: 14px; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+        <h3 style="font-size: 14px; color: #1e293b; margin-bottom: 12px;">
             <i class="fa-solid fa-list-ol"></i> Your Numbers List:
         </h3>
         <div id="leadsList"></div>
@@ -85,57 +85,84 @@
 </div>
 
 <script>
-    // --- NAYA FIREBASE CONNECTION ---
-    const firebaseConfig = {
-        databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
-    };
-    firebase.initializeApp(firebaseConfig);
+    const firebaseConfig = { databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/" };
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const database = firebase.database();
 
+    // --- 1. ADMIN ON/OFF CHECKER ---
+    database.ref('system_settings/lead_status').on('value', (snapshot) => {
+        const status = snapshot.val() || "ON";
+        const body = document.body;
+        const btn = document.getElementById('mainBtn');
+        const input = document.getElementById('leadIdInput');
+        const title = document.getElementById('title');
+        
+        if (status === "OFF") {
+            body.classList.add('system-off');
+            btn.style.background = "#ef4444";
+            btn.innerText = "SYSTEM CLOSED";
+            input.disabled = true;
+            input.placeholder = "Maintenance mode...";
+            title.innerText = "Service Closed";
+            title.style.color = "#ef4444";
+        } else {
+            body.classList.remove('system-off');
+            btn.style.background = "#1e293b";
+            btn.innerText = "Get My Numbers";
+            input.disabled = false;
+            input.placeholder = "Enter Lead ID (e.g. 7788)";
+            title.innerText = "Unlock Leads";
+            title.style.color = "#1e293b";
+        }
+    });
+
+    // --- 2. FETCH LEADS LOGIC ---
     function getLeads() {
         const id = document.getElementById('leadIdInput').value.trim();
         const resultsArea = document.getElementById('resultsArea');
         const listContainer = document.getElementById('leadsList');
 
-        if(!id) {
-            Swal.fire('Input Empty', 'Bhai pehle ID toh daalo!', 'warning');
-            return;
-        }
-
-        // Fetching from Firebase
-        database.ref('lead_groups/' + id).once('value').then((snapshot) => {
-            const data = snapshot.val();
-            
-            if(data && data.leads) {
-                resultsArea.style.display = 'block';
-                listContainer.innerHTML = "";
-                
-                data.leads.forEach((num, index) => {
-                    listContainer.innerHTML += `
-                        <div class="lead-item">
-                            <span class="lead-num">${index + 1}. ${num}</span>
-                            <i class="fa-solid fa-copy copy-icon" onclick="copyNum('${num}')"></i>
-                        </div>
-                    `;
-                });
-                Swal.fire({ icon: 'success', title: 'Success', text: 'Numbers Unlocked!', timer: 1500, showConfirmButton: false });
-            } else {
-                resultsArea.style.display = 'none';
-                Swal.fire('Not Found', 'Ye ID galat hai ya abhi tak bani nahi hai.', 'error');
+        // Check if system is OFF
+        database.ref('system_settings/lead_status').once('value', (snap) => {
+            if (snap.val() === "OFF") {
+                Swal.fire('Closed', 'Ye abhi band hai, kuch time baad chalega.', 'error');
+                return;
             }
+
+            if(!id) {
+                Swal.fire('Input Empty', 'Bhai ID toh daalo!', 'warning');
+                return;
+            }
+
+            database.ref('lead_groups/' + id).once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if(data && data.leads) {
+                    resultsArea.style.display = 'block';
+                    listContainer.innerHTML = "";
+                    data.leads.forEach((num, index) => {
+                        listContainer.innerHTML += `
+                            <div class="lead-item">
+                                <span class="lead-num">${index + 1}. ${num}</span>
+                                <div class="action-icons">
+                                    <i class="fa-solid fa-copy" title="Copy" onclick="copyNum('${num}')"></i>
+                                    <a href="https://wa.me/91${num}" target="_blank"><i class="fa-brands fa-whatsapp" title="WhatsApp Chat"></i></a>
+                                    <a href="tel:${num}"><i class="fa-solid fa-phone" title="Direct Call"></i></a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    Swal.fire({ icon: 'success', title: 'Unlocked!', timer: 1000, showConfirmButton: false });
+                } else {
+                    resultsArea.style.display = 'none';
+                    Swal.fire('Not Found', 'Galat Lead ID!', 'error');
+                }
+            });
         });
     }
 
     function copyNum(text) {
         navigator.clipboard.writeText(text);
-        // Chhota sa toast message
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2000
-        });
-        Toast.fire({ icon: 'success', title: 'Number Copied!' });
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Number Copied!', showConfirmButton: false, timer: 1500 });
     }
 </script>
 
