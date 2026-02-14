@@ -11,36 +11,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* --- Style Wahi Hai Jo Aapne Diya Tha (Original) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f1f5f9; color: #1e293b; padding: 15px; }
-        
         .container { max-width: 1000px; margin: auto; }
-        
-        /* Header */
         .admin-header { background: #1e293b; color: white; padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        
-        /* Cards */
         .card { background: white; padding: 20px; border-radius: 18px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
         h2 { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: #1e293b; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
-        
-        /* Inputs */
         input, textarea, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 14px; outline: none; }
         input:focus, textarea:focus { border-color: #1e293b; }
         textarea { height: 100px; resize: none; }
-        
-        /* Buttons */
         .btn { background: #1e293b; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: 700; cursor: pointer; transition: 0.3s; }
         .btn:hover { background: #334155; }
         .btn-save { background: #10b981; padding: 6px 12px; width: auto; font-size: 12px; }
-
-        /* Table */
         .table-res { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { text-align: left; background: #f8fafc; padding: 12px; font-size: 11px; color: #64748b; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px; font-weight: 600; }
-        
-        /* Search Box */
-        .search-box { margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -48,7 +35,7 @@
     <div class="container">
         <div class="admin-header">
             <h1><i class="fa-solid fa-user-shield"></i> Master Control</h1>
-            <p>Admin Portal - Realtime Database Access</p>
+            <p>Admin Portal - Realtime Database Access (RISE UP)</p>
         </div>
 
         <div class="card">
@@ -60,15 +47,15 @@
 
         <div class="card">
             <h2><i class="fa-solid fa-list-check"></i> Manage User Claims</h2>
-            <div class="search-box">
-                <input type="text" id="adminSearch" placeholder="Search by Leader Code or Phone..." onkeyup="filterClaims()">
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="adminSearch" placeholder="Search by Leader Code or Number..." onkeyup="filterClaims()">
             </div>
             <div class="table-res">
                 <table>
                     <thead>
                         <tr>
                             <th>Leader</th>
-                            <th>Phone</th>
+                            <th>Number</th>
                             <th>Portal</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -82,34 +69,40 @@
     </div>
 
     <script>
-        // --- NAYA FIREBASE URL YAHAN FIX KAR DIYA HAI ---
+        // --- NAYA FIREBASE CONFIG (Sahi Wala URL) ---
         const firebaseConfig = {
             databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
         };
-        firebase.initializeApp(firebaseConfig);
+        // Firebase initialization check
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const database = firebase.database();
 
-        // 1. LEAD UPLOAD LOGIC
+        // 1. Bulk Upload Logic
         function saveLeads() {
             const id = document.getElementById('leadGroupId').value.trim();
             const text = document.getElementById('numList').value.trim();
             
-            if(!id || !text) return Swal.fire('Error', 'ID aur Numbers dono fill karein!', 'error');
+            if(!id || !text) {
+                return Swal.fire('Error', 'ID aur Numbers dono fill karein!', 'error');
+            }
 
             const numbers = text.split('\n').map(n => n.trim()).filter(n => n !== "");
 
-            // Yahan data "lead_groups" node mein jayega
             database.ref('lead_groups/' + id).set({
                 leads: numbers,
                 date: new Date().toLocaleDateString()
             }).then(() => {
-                Swal.fire('Uploaded!', `Lead ID ${id} mein ${numbers.length} numbers save ho gaye.`, 'success');
+                Swal.fire('Uploaded!', `${numbers.length} numbers save ho gaye.`, 'success');
                 document.getElementById('leadGroupId').value = "";
                 document.getElementById('numList').value = "";
+            }).catch(err => {
+                Swal.fire('Database Error', err.message, 'error');
             });
         }
 
-        // 2. DATA CLAIMS LOADING LOGIC
+        // 2. Load Claims (Realtime Sync)
         function loadClaims() {
             database.ref('claims').on('value', (snapshot) => {
                 const data = snapshot.val();
@@ -117,22 +110,27 @@
                 tableBody.innerHTML = "";
 
                 if(!data) {
-                    tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Koi data nahi mila.</td></tr>";
+                    tableBody.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:20px;'>No active claims found.</td></tr>";
                     return;
                 }
 
-                Object.keys(data).reverse().forEach(key => {
+                // Data ko reverse order mein dikhayenge (Taaki naya upar aaye)
+                const keys = Object.keys(data).reverse();
+                
+                keys.forEach(key => {
                     const row = data[key];
+                    const status = row.status || "WAIT";
+                    
                     tableBody.innerHTML += `
                         <tr class="claim-row">
                             <td>${row.owner || 'N/A'}</td>
                             <td>${row.number || 'N/A'}</td>
                             <td>${row.portal || 'N/A'}</td>
                             <td>
-                                <select id="st-${key}" style="padding:4px; font-size:12px;">
-                                    <option value="WAIT" ${row.status === 'WAIT' ? 'selected' : ''}>WAIT</option>
-                                    <option value="APPROVED" ${row.status === 'APPROVED' ? 'selected' : ''}>APPROVE</option>
-                                    <option value="DISAPPROVED" ${row.status === 'DISAPPROVED' ? 'selected' : ''}>REJECT</option>
+                                <select id="st-${key}" style="padding:5px; border-radius:5px; font-weight:bold;">
+                                    <option value="WAIT" ${status === 'WAIT' ? 'selected' : ''}>WAIT</option>
+                                    <option value="APPROVED" ${status === 'APPROVED' ? 'selected' : ''}>APPROVE</option>
+                                    <option value="DISAPPROVED" ${status === 'DISAPPROVED' ? 'selected' : ''}>REJECT</option>
                                 </select>
                             </td>
                             <td>
@@ -144,15 +142,26 @@
             });
         }
 
+        // 3. Update Status Logic
         function updateStatus(key) {
             const newStatus = document.getElementById('st-' + key).value;
+            
             database.ref('claims/' + key).update({
                 status: newStatus
             }).then(() => {
-                Swal.fire({ title: 'Status Saved!', icon: 'success', timer: 1000, showConfirmButton: false });
+                Swal.fire({
+                    title: 'Status Updated!',
+                    text: 'User dashboard par update ho gaya hai.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }).catch(err => {
+                Swal.fire('Error', 'Update fail: ' + err.message, 'error');
             });
         }
 
+        // 4. Search Filter
         function filterClaims() {
             const input = document.getElementById('adminSearch').value.toUpperCase();
             const rows = document.querySelectorAll('.claim-row');
