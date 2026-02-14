@@ -82,9 +82,9 @@
     </div>
 
     <script>
-        // Firebase Config (Aapke original URL ke sath)
+        // --- NAYA FIREBASE URL YAHAN FIX KAR DIYA HAI ---
         const firebaseConfig = {
-            databaseURL: "https://data-claim-69ed0-default-rtdb.firebaseio.com/"
+            databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
@@ -98,6 +98,7 @@
 
             const numbers = text.split('\n').map(n => n.trim()).filter(n => n !== "");
 
+            // Yahan data "lead_groups" node mein jayega
             database.ref('lead_groups/' + id).set({
                 leads: numbers,
                 date: new Date().toLocaleDateString()
