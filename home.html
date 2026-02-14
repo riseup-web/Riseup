@@ -6,259 +6,62 @@
     <title>RISE UP | Home & Dashboard</title>
     
     <link rel="icon" type="image/png" href="https://i.ibb.co/yFx9mF9X/1767869225352.png">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/yFx9mF9X/1767869225352.png">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* Base Reset */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
-        }
-
-        body { 
-            background-color: #f8fafc; 
-            color: #1a1a1a; 
-            overflow-y: auto; 
-            min-height: 100vh;
-        }
-
-        /* Header Section */
-        header { 
-            background: #fff; 
-            padding: 15px 20px; 
-            display: flex; 
-            align-items: center; 
-            border-bottom: 1px solid #f0f0f0; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .menu-btn { 
-            font-size: 22px; 
-            cursor: pointer; 
-            border: none; 
-            background: none; 
-            color: #1e293b; 
-            display: flex; 
-            align-items: center; 
-        }
-
-        header h1 { 
-            font-size: 22px; 
-            font-weight: 800; 
-            flex: 1; 
-            text-align: center; 
-            margin-right: 35px; 
-            color: #1e293b;
-        }
+        /* FULL CSS BLOCK */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f8fafc; color: #1a1a1a; min-height: 100vh; overflow-x: hidden; }
+        
+        header { background: #fff; padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .menu-btn { font-size: 22px; cursor: pointer; border: none; background: none; color: #1e293b; }
+        header h1 { font-size: 22px; font-weight: 800; flex: 1; text-align: center; color: #1e293b; margin-right: 35px; }
 
         /* Sidebar Styling */
-        .sidebar { 
-            position: fixed; 
-            top: 0; 
-            left: -100%; 
-            width: 300px; 
-            height: 100%; 
-            background: #fff; 
-            z-index: 1001; 
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            padding: 25px; 
-            box-shadow: 15px 0 40px rgba(0,0,0,0.1); 
-        }
+        .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #fff; z-index: 1001; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 25px; box-shadow: 15px 0 40px rgba(0,0,0,0.1); }
+        .sidebar.active { left: 0; }
+        .close-sidebar { font-size: 24px; cursor: pointer; color: #94a3b8; float: right; padding: 5px; }
+        .user-profile { display: flex; align-items: center; gap: 15px; margin-top: 40px; padding-bottom: 20px; border-bottom: 1px solid #f1f5f9; }
+        .user-profile img { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #e2e8f0; }
+        .user-info h3 { font-size: 16px; font-weight: 800; color: #1e293b; }
 
-        .sidebar.active { 
-            left: 0; 
-        }
-
-        .sidebar-header { 
-            display: flex; 
-            justify-content: flex-end; 
-            margin-bottom: 10px; 
-        }
-
-        .close-sidebar { 
-            font-size: 24px; 
-            cursor: pointer; 
-            color: #94a3b8; 
-            padding: 5px; 
-        }
-
-        .user-profile { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            margin-bottom: 30px; 
-            padding-bottom: 20px; 
-            border-bottom: 1px solid #f1f5f9; 
-        }
-
-        .user-profile img { 
-            width: 60px; 
-            height: 60px; 
-            border-radius: 50%;
-            border: 2px solid #e2e8f0;
-        }
-
-        .user-info p { 
-            font-size: 11px; 
-            color: #64748b; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-        }
-
-        .user-info h3 { 
-            font-size: 18px; 
-            font-weight: 800; 
-            color: #1e293b; 
-        }
-
-        /* Navigation Links */
-        .nav-link { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            padding: 15px 18px; 
-            text-decoration: none; 
-            color: #475569; 
-            font-weight: 600; 
-            font-size: 16px; 
-            border-radius: 12px; 
-            margin-bottom: 8px; 
-            transition: 0.3s; 
-        }
-
-        .nav-link:hover, .nav-link.active { 
-            background: #f1f5f9; 
-            color: #1e293b; 
-        }
-
-        .nav-link.active {
-            border-left: 4px solid #1e293b;
-        }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 14px; text-decoration: none; color: #475569; font-weight: 600; border-radius: 10px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: #f1f5f9; color: #1e293b; }
+        .nav-link.active { border-left: 4px solid #1e293b; }
 
         /* Main Content */
-        .main-content { 
-            padding: 25px 15px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-
-        .performance-card { 
-            background: #fff; 
-            border-radius: 25px; 
-            padding: 30px 20px; 
-            width: 100%; 
-            max-width: 500px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-            border: 1px solid #f1f5f9; 
-            margin-bottom: 25px; 
-            text-align: center;
-        }
-
-        .performance-card h2 { 
-            font-size: 22px; 
-            font-weight: 800; 
-            margin-bottom: 10px; 
-            color: #1e293b;
-        }
-
-        .performance-card p { 
-            font-size: 14px; 
-            color: #64748b; 
-            margin-bottom: 25px; 
-        }
-
-        .search-group { 
-            display: flex; 
-            flex-direction: column;
-            gap: 12px; 
-        }
-
-        .search-group input { 
-            width: 100%; 
-            padding: 16px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 14px; 
-            outline: none; 
-            font-size: 16px; 
-            font-weight: 700; 
-            text-align: center;
-        }
-
-        .btn-search { 
-            background: #1e293b; 
-            color: #fff; 
-            border: none; 
-            padding: 16px; 
-            border-radius: 14px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: 0.3s;
-        }
+        .main-content { padding: 25px 15px; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .performance-card { background: #fff; border-radius: 25px; padding: 30px 20px; width: 100%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; text-align: center; margin-bottom: 20px; }
+        .performance-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: #1e293b; }
+        
+        .search-group input { width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 14px; font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        .search-group input:focus { border-color: #1e293b; }
+        .btn-search { background: #1e293b; color: #fff; border: none; padding: 16px; border-radius: 14px; width: 100%; font-weight: 700; cursor: pointer; font-size: 16px; }
 
         /* Dashboard Data Display */
-        #dashboardResults { 
-            display: none; 
-            width: 100%; 
-            max-width: 500px; 
-            animation: fadeIn 0.4s ease; 
-        }
-
+        #dashboardResults { display: none; width: 100%; max-width: 500px; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .stat-banner { background: #1e293b; color: #fff; padding: 25px; border-radius: 22px; margin-bottom: 20px; text-align: center; box-shadow: 0 10px 20px rgba(30,41,59,0.2); }
+        .stat-banner p { font-size: 11px; opacity: 0.8; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .stat-banner h2 { font-size: 45px; font-weight: 800; margin-top: 5px; }
 
-        .stat-banner { 
-            background: #1e293b; 
-            color: #fff; 
-            padding: 25px; 
-            border-radius: 22px; 
-            margin-bottom: 20px; 
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(30,41,59,0.2);
-        }
-
-        .stat-banner h2 { font-size: 42px; font-weight: 800; }
-
-        .portal-card { 
-            background: #fff; 
-            border-radius: 22px; 
-            padding: 20px; 
-            margin-bottom: 15px; 
-            border: 1px solid #e2e8f0; 
-        }
-
-        .portal-header { 
-            font-size: 18px; 
-            font-weight: 800; 
-            margin-bottom: 15px; 
-            color: #1e293b;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 10px;
-        }
-
+        .portal-card { background: #fff; border-radius: 22px; padding: 20px; margin-bottom: 15px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px rgba(0,0,0,0.01); }
+        .portal-header { font-size: 16px; font-weight: 800; margin-bottom: 15px; color: #1e293b; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; display: flex; justify-content: space-between; }
+        
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; font-size: 10px; color: #94a3b8; text-transform: uppercase; padding-bottom: 10px; }
-        td { padding: 12px 0; font-size: 14px; font-weight: 700; border-top: 1px solid #f8fafc; }
+        td { padding: 12px 0; font-size: 13px; font-weight: 700; border-top: 1px solid #f8fafc; color: #334155; }
 
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+        .badge { padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; display: inline-block; }
         .wait-badge { background: #fef9c3; color: #854d0e; }
         .approve-badge { background: #dcfce7; color: #166534; }
         .disapprove-badge { background: #fee2e2; color: #991b1b; }
 
-        .dimmer { 
-            display: none; 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.4); z-index: 1000; backdrop-filter: blur(3px); 
-        }
+        .dimmer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; backdrop-filter: blur(3px); }
         .dimmer.show { display: block; }
     </style>
 </head>
@@ -267,22 +70,18 @@
     <div class="dimmer" id="overlay" onclick="toggleNav()"></div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <i class="fa-solid fa-xmark close-sidebar" onclick="toggleNav()"></i>
-        </div>
+        <i class="fa-solid fa-xmark close-sidebar" onclick="toggleNav()"></i>
         <div class="user-profile">
             <img src="https://i.ibb.co/yFx9mF9X/1767869225352.png" alt="User">
             <div class="user-info">
-                <p>Leader Account</p>
-                <h3 id="sideUserCode">...</h3>
+                <p style="font-size: 10px; color: #64748b; font-weight: 700;">LEADER ACCOUNT</p>
+                <h3 id="sideUserCode">RU-USER</h3>
             </div>
         </div>
-        <nav>
+        <nav style="margin-top: 25px;">
             <a href="home.html" class="nav-link active"><i class="fa-solid fa-layer-group"></i> Dashboard</a>
             <a href="data-claim.html" class="nav-link"><i class="fa-solid fa-file-export"></i> Data Claim</a>
-            
             <a href="leads.html" class="nav-link"><i class="fa-solid fa-users-viewfinder"></i> Get Leads</a>
-            
             <a href="payment.html" class="nav-link"><i class="fa-solid fa-credit-card"></i> Payment</a>
             <a href="index.html" class="nav-link" style="margin-top: 40px; color: #ef4444;"><i class="fa-solid fa-power-off"></i> Logout</a>
         </nav>
@@ -306,7 +105,7 @@
 
         <div id="dashboardResults">
             <div class="stat-banner">
-                <p style="font-size: 12px; opacity: 0.8; text-transform: uppercase; font-weight: 700;">Total Data Claims</p>
+                <p>Total Data Claims</p>
                 <h2 id="totalCountDisplay">00</h2>
             </div>
             <div id="dynamicContainer"></div>
@@ -314,73 +113,117 @@
     </main>
 
     <script>
-        // Firebase Configuration
+        // --- FIREBASE INITIALIZATION ---
         const firebaseConfig = {
-            databaseURL: "https://data-claim-69ed0-default-rtdb.firebaseio.com/"
+            databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/"
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
+        // 1. Sidebar Toggle
         function toggleNav() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('show');
         }
 
+        // 2. Leader Codes Validation List (Isme aap aur codes add kar sakte hain)
+        const validLeaderCodes = [
+            "AK", "SK", "ADMIN", "RISE01", "RU-7788", "TEAM-A", "TEAM-B", "LEADER-X"
+        ];
+
+        // 3. Search Data Logic
         function startSearch() {
             const inputCode = document.getElementById('leaderInput').value.trim().toUpperCase();
-            if(!inputCode) return alert("Enter Code!");
+            const container = document.getElementById('dynamicContainer');
+            const countDisplay = document.getElementById('totalCountDisplay');
+            const resultsArea = document.getElementById('dashboardResults');
 
+            if(!inputCode) {
+                Swal.fire('Empty Input', 'Bhai code toh dalo!', 'warning');
+                return;
+            }
+
+            // Show loading state
+            Swal.fire({ title: 'Fetching Data...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+
+            // Listen to data change in real-time
             database.ref('claims').on('value', (snapshot) => {
+                Swal.close();
                 const data = snapshot.val();
-                const container = document.getElementById('dynamicContainer');
-                const countDisplay = document.getElementById('totalCountDisplay');
-                document.getElementById('dashboardResults').style.display = 'block';
+                resultsArea.style.display = 'block';
                 container.innerHTML = "";
 
                 if(!data) {
                     countDisplay.innerText = "00";
-                    container.innerHTML = "<p style='text-align:center; padding:20px;'>No Data Found</p>";
+                    container.innerHTML = "<p style='text-align:center; padding:30px; color:#64748b;'>Database is currently empty.</p>";
                     return;
                 }
 
-                const myClaims = Object.values(data).filter(item => item.owner && item.owner.toUpperCase() === inputCode);
+                // Filter logic
+                const myClaims = Object.values(data).filter(item => 
+                    item.owner && item.owner.toUpperCase() === inputCode
+                );
+
                 countDisplay.innerText = myClaims.length.toString().padStart(2, '0');
 
                 if(myClaims.length === 0) {
-                    container.innerHTML = "<p style='text-align:center; padding:20px;'>No records found for this code.</p>";
+                    container.innerHTML = `
+                        <div class="portal-card" style="text-align:center;">
+                            <i class="fa-solid fa-magnifying-glass" style="font-size:30px; color:#cbd5e1; margin-bottom:10px;"></i>
+                            <p style="color:#64748b;">No records found for code: <b>${inputCode}</b></p>
+                        </div>`;
                     return;
                 }
 
+                // Group by Portals (Automatically detects all portals)
                 const portals = [...new Set(myClaims.map(c => c.portal))];
+                
                 portals.forEach(pName => {
                     const pData = myClaims.filter(d => d.portal === pName);
                     let tableHtml = `
                         <div class="portal-card">
-                            <div class="portal-header">${pName} (${pData.length})</div>
+                            <div class="portal-header">
+                                <span><i class="fa-solid fa-server"></i> ${pName}</span>
+                                <span style="color:#64748b; font-size:12px;">Total: ${pData.length}</span>
+                            </div>
                             <table>
-                                <thead><tr><th>S.N</th><th>Client Number</th><th>Status</th></tr></thead>
+                                <thead>
+                                    <tr>
+                                        <th>S.N</th>
+                                        <th>Client Number</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
                                 <tbody>`;
                     
                     pData.forEach((row, idx) => {
                         let status = (row.status || "WAIT").toUpperCase();
-                        let badge = status === "APPROVED" ? "approve-badge" : (status === "DISAPPROVED" ? "disapprove-badge" : "wait-badge");
+                        let badgeClass = "wait-badge";
+                        if(status === "APPROVED") badgeClass = "approve-badge";
+                        if(status === "DISAPPROVED" || status === "REJECTED") badgeClass = "disapprove-badge";
+
                         tableHtml += `
                             <tr>
                                 <td>${idx + 1}</td>
-                                <td>${row.number}</td>
-                                <td><span class="badge ${badge}">${status}</span></td>
+                                <td>${row.number || 'N/A'}</td>
+                                <td><span class="badge ${badgeClass}">${status}</span></td>
                             </tr>`;
                     });
+
                     tableHtml += `</tbody></table></div>`;
                     container.innerHTML += tableHtml;
                 });
             });
         }
 
+        // 4. Auto-load code from login/localStorage
         window.onload = function() {
-            const savedCode = localStorage.getItem('userCode') || "RU-USER";
-            document.getElementById('sideUserCode').innerText = savedCode;
-            document.getElementById('leaderInput').value = savedCode;
+            const savedCode = localStorage.getItem('userCode');
+            if(savedCode) {
+                document.getElementById('sideUserCode').innerText = savedCode;
+                document.getElementById('leaderInput').value = savedCode;
+                startSearch(); // Auto-search on page load
+            }
         };
     </script>
 </body>
