@@ -39,19 +39,17 @@
             margin: 0 auto 20px; font-size: 30px; transform: rotate(-5deg);
         }
 
-        h1 { font-size: 24px; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
+        h1 { font-size: 24px; color: var(--text-main); font-weight: 800; }
         p { color: var(--text-sub); font-size: 14px; margin-bottom: 25px; }
 
         .input-group input { 
             width: 100%; padding: 18px; border: 2px solid #e2e8f0; border-radius: 18px; 
             outline: none; font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 15px;
-            color: var(--primary);
         }
 
         .unlock-btn { 
             width: 100%; padding: 18px; background: var(--primary); color: white; 
             border: none; border-radius: 18px; font-weight: 800; cursor: pointer; font-size: 16px;
-            box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3);
         }
 
         #resultsArea { margin-top: 35px; display: none; text-align: left; }
@@ -70,10 +68,8 @@
             background: #f8fafc; border-radius: 12px; color: var(--primary); text-decoration: none;
             font-size: 18px; border: 1px solid #e2e8f0;
         }
-        .fa-whatsapp { color: #25d366 !important; }
-        .fa-phone { color: #3b82f6 !important; }
 
-        /* --- Dynamic Colors CSS --- */
+        /* Dynamic Status Colors */
         .status-trigger {
             margin-top: 15px; padding: 14px; background: #f8fafc;
             border-radius: 15px; border: 1px dashed #cbd5e1;
@@ -82,7 +78,6 @@
             transition: 0.3s;
         }
 
-        /* Colours */
         .status-interested { background: #dcfce7 !important; color: #166534 !important; border: 1px solid #166534 !important; }
         .status-not-interested { background: #fee2e2 !important; color: #991b1b !important; border: 1px solid #991b1b !important; }
         .status-switch-off { background: #1e293b !important; color: #ffffff !important; border: 1px solid #000000 !important; }
@@ -96,7 +91,7 @@
         }
         .modal-content {
             background: white; width: 100%; border-radius: 35px 35px 0 0;
-            padding: 30px 20px; transform: translateY(100%); transition: 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            padding: 30px 20px; transform: translateY(100%); transition: 0.4s;
         }
         .modal-content.active { transform: translateY(0); }
         .modal-option {
@@ -105,7 +100,7 @@
             cursor: pointer; font-size: 15px; color: var(--primary);
         }
 
-        .back-link { margin-top: 25px; display: block; color: var(--text-sub); text-decoration: none; font-size: 13px; font-weight: 700; }
+        .back-link { margin-top: 25px; display: block; color: var(--text-sub); text-decoration: none; font-size: 13px; font-weight: 700; text-align: center; }
     </style>
 </head>
 <body>
@@ -121,7 +116,7 @@
     <button class="unlock-btn" id="mainBtn" onclick="getLeads()">Get My Numbers</button>
 
     <div id="resultsArea">
-        <h3 style="font-size: 12px; margin-bottom: 15px; color: #94a3b8; text-transform: uppercase;">Unlocked Numbers</h3>
+        <h3 style="font-size: 11px; margin-bottom: 15px; color: #94a3b8; text-transform: uppercase;">Real-time Status List</h3>
         <div id="leadsList"></div>
     </div>
 
@@ -130,16 +125,13 @@
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
     <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
-        <div style="width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: 0 auto 20px;"></div>
         <h2 style="margin-bottom: 25px; font-size: 18px; font-weight: 800; text-align: center;">Update Status</h2>
-        
         <div class="modal-option" onclick="setFeedback('Call Nahi Uthayi')">Call Nahi Uthayi</div>
         <div class="modal-option" onclick="setFeedback('Call Cut Kar Di')">Call Cut Kar Di</div>
         <div class="modal-option" onclick="setFeedback('Interested')">Interested</div>
         <div class="modal-option" onclick="setFeedback('Not Interested')">Not Interested</div>
         <div class="modal-option" onclick="setFeedback('Switch Off')">Switch Off</div>
-        
-        <button onclick="closeModal()" style="margin-top: 15px; border: none; background: #f8fafc; color: #ef4444; font-weight: 800; width: 100%; padding: 15px; border-radius: 15px;">Cancel</button>
+        <button onclick="closeModal()" style="margin-top: 10px; border: none; background: #f8fafc; color: #ef4444; width: 100%; padding: 15px; border-radius: 15px; font-weight: 800;">Cancel</button>
     </div>
 </div>
 
@@ -153,7 +145,7 @@
     const leaderCode = localStorage.getItem('userLeaderCode') || "Direct User";
     let currentAction = null;
 
-    // Sync System Status
+    // Admin Toggle
     database.ref('system_settings/lead_status').on('value', (snap) => {
         const off = snap.val() === "OFF";
         document.body.classList.toggle('system-off', off);
@@ -163,12 +155,15 @@
     function getLeads() {
         const id = document.getElementById('leadIdInput').value.trim();
         if(!id) return;
+
         database.ref('lead_groups/' + id).once('value', (snapshot) => {
             const data = snapshot.val();
             if(!data) return Swal.fire('Error', 'Invalid ID', 'error');
+            
             document.getElementById('resultsArea').style.display = 'block';
             const list = document.getElementById('leadsList');
             list.innerHTML = "";
+            
             data.leads.forEach((num, i) => {
                 const leadKey = `${id}_${i}`;
                 list.innerHTML += `
@@ -182,12 +177,31 @@
                             </div>
                         </div>
                         <div class="status-trigger" id="trig-${leadKey}" onclick="openModal('${id}', '${num}', ${i})">
-                            <span id="label-${leadKey}">Update Call Status</span>
+                            <span id="label-${leadKey}">Checking Status...</span>
                             <i class="fa-solid fa-chevron-right"></i>
                         </div>
                     </div>`;
+
+                // PERMANENT STATUS LOADING (DATABASE SE FETCH)
+                database.ref('lead_reports/' + leadKey).on('value', (reportSnap) => {
+                    const report = reportSnap.val();
+                    const trigger = document.getElementById(`trig-${leadKey}`);
+                    const label = document.getElementById(`label-${leadKey}`);
+                    
+                    if(trigger && label && report && report.user_feedback) {
+                        const statusText = report.user_feedback;
+                        label.innerText = statusText;
+                        trigger.classList.remove('status-interested', 'status-not-interested', 'status-switch-off', 'status-default');
+                        
+                        if(statusText === 'Interested') trigger.classList.add('status-interested');
+                        else if(statusText === 'Not Interested') trigger.classList.add('status-not-interested');
+                        else if(statusText === 'Switch Off') trigger.classList.add('status-switch-off');
+                        else trigger.classList.add('status-default');
+                    } else if(label) {
+                        label.innerText = "Update Call Status";
+                    }
+                });
             });
-            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent('🔓 Lead Unlocked: '+leaderCode+'\nID: '+id)}`);
         });
     }
 
@@ -210,24 +224,15 @@
         database.ref('lead_reports/' + leadKey).set({
             leader: leaderCode, lead_id: leadId, number: num, user_feedback: statusText, time: new Date().toLocaleString()
         }).then(() => {
-            const trigger = document.getElementById(`trig-${leadKey}`);
-            document.getElementById(`label-${leadKey}`).innerText = statusText;
-            
-            // Remove all old colors
-            trigger.classList.remove('status-interested', 'status-not-interested', 'status-switch-off', 'status-default');
-            
-            // Add new dynamic color
-            if(statusText === 'Interested') trigger.classList.add('status-interested');
-            else if(statusText === 'Not Interested') trigger.classList.add('status-not-interested');
-            else if(statusText === 'Switch Off') trigger.classList.add('status-switch-off');
-            else trigger.classList.add('status-default');
-            
             closeModal();
-            Swal.fire({ toast:true, position:'top', icon:'success', title:'Saved', showConfirmButton:false, timer:1000 });
+            Swal.fire({ toast:true, position:'top', icon:'success', title:'Status Saved', showConfirmButton:false, timer:1000 });
         });
     }
 
-    function copyNum(n) { navigator.clipboard.writeText(n); }
+    function copyNum(n) { 
+        navigator.clipboard.writeText(n);
+        Swal.fire({ toast:true, position:'top-end', icon:'success', title:'Copied!', showConfirmButton:false, timer:800 });
+    }
 </script>
 </body>
 </html>
