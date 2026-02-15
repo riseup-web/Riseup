@@ -12,68 +12,80 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; transition: 0.5s; }
+        body { background: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; transition: 0.5s; }
         
         .leads-card { 
-            background: #ffffff; width: 100%; max-width: 400px; padding: 30px 20px; 
+            background: #ffffff; width: 100%; max-width: 400px; padding: 25px; 
             border-radius: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            text-align: center; border: 1px solid #eef2f6; transition: 0.3s;
+            text-align: center; border: 1px solid #eef2f6; 
         }
 
-        /* System OFF Mode Style */
+        /* System OFF Mode */
         body.system-off { background: #fee2e2; }
         .system-off .leads-card { border: 2px solid #ef4444; }
         .system-off .icon-box { background: #ef4444 !important; }
 
         .icon-box { 
-            width: 70px; height: 70px; background: #1e293b; color: white; 
+            width: 60px; height: 60px; background: #1e293b; color: white; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            margin: 0 auto 20px; font-size: 30px; 
+            margin: 0 auto 15px; font-size: 24px; 
         }
 
-        h1 { font-size: 22px; color: #1e293b; margin-bottom: 8px; font-weight: 800; }
-        p { color: #64748b; font-size: 14px; margin-bottom: 25px; }
+        h1 { font-size: 20px; color: #1e293b; margin-bottom: 5px; font-weight: 800; }
+        p { color: #64748b; font-size: 13px; margin-bottom: 20px; }
 
         .input-group input { 
-            width: 100%; padding: 16px; border: 2px solid #e2e8f0; border-radius: 12px; 
-            outline: none; font-size: 16px; font-weight: 600; text-align: center;
+            width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; 
+            outline: none; font-size: 16px; font-weight: 600; text-align: center; margin-bottom: 15px;
         }
 
         .unlock-btn { 
-            width: 100%; padding: 16px; background: #1e293b; color: white; 
-            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; 
-            font-size: 16px; margin-top: 20px;
+            width: 100%; padding: 14px; background: #1e293b; color: white; 
+            border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px;
         }
 
-        #resultsArea { margin-top: 30px; display: none; text-align: left; }
+        #resultsArea { margin-top: 25px; display: none; text-align: left; }
+        
+        /* Lead Item Styling */
         .lead-item { 
-            background: #f1f5f9; padding: 15px; border-radius: 12px; 
-            margin-bottom: 12px; display: flex; justify-content: space-between; 
-            align-items: center; border: 1px solid #e2e8f0;
+            background: #f1f5f9; padding: 15px; border-radius: 15px; 
+            margin-bottom: 12px; border: 1px solid #e2e8f0; 
         }
+        .lead-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .lead-num { font-weight: 700; color: #1e293b; font-size: 16px; }
+        
         .action-icons { display: flex; gap: 15px; font-size: 18px; }
-        .action-icons i { cursor: pointer; transition: 0.2s; color: #64748b; }
-        .fa-whatsapp { color: #25d366 !important; }
-        .fa-phone { color: #3b82f6 !important; }
+        .fa-whatsapp { color: #25d366; }
+        .fa-phone { color: #3b82f6; }
+        .fa-copy { color: #64748b; }
+
+        /* Feedback Section */
+        .feedback-box { 
+            display: flex; gap: 5px; border-top: 1px solid #cbd5e1; padding-top: 10px; margin-top: 5px;
+        }
+        select { flex: 1; padding: 6px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 12px; outline: none; }
+        .save-fb-btn { 
+            background: #1e293b; color: white; border: none; padding: 6px 12px; 
+            border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer;
+        }
 
         .back-link { margin-top: 20px; display: block; color: #64748b; text-decoration: none; font-size: 13px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="leads-card" id="mainCard">
+<div class="leads-card">
     <div class="icon-box" id="mainIcon"><i class="fa-solid fa-unlock-keyhole"></i></div>
     <h1 id="title">Unlock Leads</h1>
     <p id="subTitle">Secret Lead ID yahan dalein</p>
 
     <div class="input-group">
-        <input type="text" id="leadIdInput" placeholder="Enter Lead ID (e.g. 7788)">
+        <input type="text" id="leadIdInput" placeholder="Enter Lead ID">
     </div>
     <button class="unlock-btn" id="mainBtn" onclick="getLeads()">Get My Numbers</button>
 
     <div id="resultsArea">
-        <h3 style="font-size: 14px; color: #1e293b; margin-bottom: 12px;"><i class="fa-solid fa-list-ol"></i> Your Numbers:</h3>
+        <h3 style="font-size: 14px; color: #1e293b; margin-bottom: 12px;">Your Numbers List:</h3>
         <div id="leadsList"></div>
     </div>
 
@@ -81,83 +93,110 @@
 </div>
 
 <script>
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = { databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/" };
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const database = firebase.database();
 
-    // Telegram Details
+    // --- TELEGRAM CONFIG ---
     const botToken = "8431966539:AAFjwS-kYkDpccpSmJeotpNqPEAAcW2wXMY";
     const chatId = "8415600127";
     const leaderCode = localStorage.getItem('userLeaderCode') || "Direct User";
 
-    function sendTelegramAlert(leadId, count) {
-        const message = `🚀 *Lead Unlocked!*\n👤 *Leader:* ${leaderCode}\n🆔 *Lead ID:* ${leadId}\n🔢 *Numbers:* ${count}\n⏰ *Time:* ${new Date().toLocaleString()}`;
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`);
-    }
-
-    // Admin ON/OFF Realtime Sync
+    // --- 1. ADMIN ON/OFF CONTROL ---
     database.ref('system_settings/lead_status').on('value', (snapshot) => {
         const status = snapshot.val() || "ON";
+        const body = document.body;
         const btn = document.getElementById('mainBtn');
         const input = document.getElementById('leadIdInput');
-        const body = document.body;
         
         if (status === "OFF") {
             body.classList.add('system-off');
             btn.innerText = "SYSTEM CLOSED";
             btn.style.background = "#ef4444";
             input.disabled = true;
-            input.placeholder = "Maintenance mode...";
         } else {
             body.classList.remove('system-off');
             btn.innerText = "Get My Numbers";
             btn.style.background = "#1e293b";
             input.disabled = false;
-            input.placeholder = "Enter Lead ID (e.g. 7788)";
         }
     });
 
+    // --- 2. GET LEADS & TELEGRAM ALERT ---
     function getLeads() {
         const id = document.getElementById('leadIdInput').value.trim();
         const resultsArea = document.getElementById('resultsArea');
         const listContainer = document.getElementById('leadsList');
 
-        database.ref('system_settings/lead_status').once('value', (snap) => {
-            if (snap.val() === "OFF") {
-                Swal.fire('Closed', 'Abhi band hai, baad mein aaiye.', 'error');
-                return;
-            }
-            if(!id) return Swal.fire('Error', 'ID dalein!', 'warning');
+        if(!id) {
+            Swal.fire('Error', 'Lead ID dalein!', 'warning');
+            return;
+        }
 
-            database.ref('lead_groups/' + id).once('value').then((snapshot) => {
-                const data = snapshot.val();
-                if(data && data.leads) {
-                    resultsArea.style.display = 'block';
-                    listContainer.innerHTML = "";
-                    data.leads.forEach((num, index) => {
-                        listContainer.innerHTML += `
-                            <div class="lead-item">
-                                <span class="lead-num">${index + 1}. ${num}</span>
+        database.ref('lead_groups/' + id).once('value').then((snapshot) => {
+            const data = snapshot.val();
+            if(data && data.leads) {
+                resultsArea.style.display = 'block';
+                listContainer.innerHTML = "";
+                
+                data.leads.forEach((num, index) => {
+                    listContainer.innerHTML += `
+                        <div class="lead-item">
+                            <div class="lead-top">
+                                <span class="lead-num">${num}</span>
                                 <div class="action-icons">
                                     <i class="fa-solid fa-copy" onclick="copyNum('${num}')"></i>
                                     <a href="https://wa.me/91${num}" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
                                     <a href="tel:${num}"><i class="fa-solid fa-phone"></i></a>
                                 </div>
-                            </div>`;
-                    });
-                    sendTelegramAlert(id, data.leads.length);
-                    Swal.fire({ icon: 'success', title: 'Unlocked!', timer: 1000, showConfirmButton: false });
-                } else {
-                    Swal.fire('Not Found', 'Galat Lead ID!', 'error');
-                }
-            });
+                            </div>
+                            <div class="feedback-box">
+                                <select id="fb-${id}-${index}">
+                                    <option value="">Kya hua call ka?</option>
+                                    <option value="Call Nahi Uthayi">Call Nahi Uthayi</option>
+                                    <option value="Call Cut Kar Di">Call Cut Kar Di</option>
+                                    <option value="Interested">Interested</option>
+                                    <option value="Not Interested">Not Interested</option>
+                                    <option value="Switch Off">Switch Off</option>
+                                </select>
+                                <button class="save-fb-btn" onclick="saveStatus('${id}','${num}',${index})">Save</button>
+                            </div>
+                        </div>`;
+                });
+
+                // Telegram Message
+                const msg = `🚀 *Lead Unlocked!*\n👤 *Leader:* ${leaderCode}\n🆔 *Lead ID:* ${id}\n🔢 *Numbers:* ${data.leads.length}`;
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+
+                Swal.fire({ icon: 'success', title: 'Unlocked!', timer: 1000, showConfirmButton: false });
+            } else {
+                Swal.fire('Invalid', 'Ye ID galat hai!', 'error');
+            }
+        });
+    }
+
+    // --- 3. SAVE STATUS (ADMIN REPORT) ---
+    function saveStatus(leadId, num, i) {
+        const feedback = document.getElementById(`fb-${leadId}-${i}`).value;
+        if(!feedback) return Swal.fire('Wait', 'Pehle status select karo!', 'warning');
+
+        database.ref('lead_reports/' + leadId + "_" + i).set({
+            leader: leaderCode,
+            lead_id: leadId,
+            number: num,
+            user_feedback: feedback,
+            time: new Date().toLocaleString()
+        }).then(() => {
+            Swal.fire({ icon: 'success', title: 'Status Saved!', timer: 800, showConfirmButton: false });
         });
     }
 
     function copyNum(text) {
         navigator.clipboard.writeText(text);
-        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Copied!', showConfirmButton: false, timer: 1500 });
+        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Copied!', showConfirmButton: false, timer: 1000 });
     }
 </script>
+
 </body>
 </html>
