@@ -23,14 +23,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 15px; transition: 0.5s; }
         
-        /* Card Container */
         .leads-card { 
             background: var(--card); width: 100%; max-width: 420px; padding: 30px 20px; 
             border-radius: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
             text-align: center; position: relative;
         }
 
-        /* System OFF State */
+        /* Admin OFF State */
         body.system-off { background: #fee2e2; }
         .system-off .unlock-btn { background: #ef4444 !important; box-shadow: none; }
 
@@ -38,28 +37,23 @@
             width: 70px; height: 70px; background: var(--primary); color: white; 
             border-radius: 22px; display: flex; align-items: center; justify-content: center; 
             margin: 0 auto 20px; font-size: 30px; transform: rotate(-5deg);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         h1 { font-size: 24px; color: var(--text-main); font-weight: 800; letter-spacing: -0.5px; }
         p { color: var(--text-sub); font-size: 14px; margin-bottom: 25px; }
 
-        /* Input & Button */
         .input-group input { 
             width: 100%; padding: 18px; border: 2px solid #e2e8f0; border-radius: 18px; 
             outline: none; font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 15px;
-            transition: 0.3s; color: var(--primary);
+            color: var(--primary);
         }
-        .input-group input:focus { border-color: var(--accent); background: #fff; }
 
         .unlock-btn { 
             width: 100%; padding: 18px; background: var(--primary); color: white; 
             border: none; border-radius: 18px; font-weight: 800; cursor: pointer; font-size: 16px;
-            box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3); transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(30, 41, 59, 0.3);
         }
-        .unlock-btn:active { transform: scale(0.98); }
 
-        /* Results Area */
         #resultsArea { margin-top: 35px; display: none; text-align: left; }
         
         .lead-item { 
@@ -74,12 +68,12 @@
         .action-icons i, .action-icons a { 
             width: 42px; height: 42px; display: flex; align-items: center; justify-content: center;
             background: #f8fafc; border-radius: 12px; color: var(--primary); text-decoration: none;
-            transition: 0.2s; cursor: pointer; font-size: 18px; border: 1px solid #e2e8f0;
+            font-size: 18px; border: 1px solid #e2e8f0;
         }
         .fa-whatsapp { color: #25d366 !important; }
         .fa-phone { color: #3b82f6 !important; }
 
-        /* Status Trigger Button */
+        /* --- Dynamic Colors CSS --- */
         .status-trigger {
             margin-top: 15px; padding: 14px; background: #f8fafc;
             border-radius: 15px; border: 1px dashed #cbd5e1;
@@ -87,9 +81,14 @@
             cursor: pointer; font-size: 13px; font-weight: 700; color: var(--text-sub);
             transition: 0.3s;
         }
-        .status-trigger.updated { background: #dcfce7; color: #166534; border-style: solid; border-color: #166534; }
 
-        /* Professional Bottom Sheet */
+        /* Colours */
+        .status-interested { background: #dcfce7 !important; color: #166534 !important; border: 1px solid #166534 !important; }
+        .status-not-interested { background: #fee2e2 !important; color: #991b1b !important; border: 1px solid #991b1b !important; }
+        .status-switch-off { background: #1e293b !important; color: #ffffff !important; border: 1px solid #000000 !important; }
+        .status-default { background: #e0f2fe !important; color: #075985 !important; border: 1px solid #075985 !important; }
+
+        /* Bottom Sheet Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); display: none; align-items: flex-end; z-index: 9999;
@@ -103,9 +102,8 @@
         .modal-option {
             padding: 18px; margin-bottom: 12px; border-radius: 18px;
             background: #f1f5f9; font-weight: 700; text-align: center;
-            cursor: pointer; transition: 0.2s; font-size: 15px; color: var(--primary);
+            cursor: pointer; font-size: 15px; color: var(--primary);
         }
-        .modal-option:active { background: var(--primary); color: white; }
 
         .back-link { margin-top: 25px; display: block; color: var(--text-sub); text-decoration: none; font-size: 13px; font-weight: 700; }
     </style>
@@ -123,7 +121,7 @@
     <button class="unlock-btn" id="mainBtn" onclick="getLeads()">Get My Numbers</button>
 
     <div id="resultsArea">
-        <h3 style="font-size: 12px; margin-bottom: 15px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Unlocked Numbers</h3>
+        <h3 style="font-size: 12px; margin-bottom: 15px; color: #94a3b8; text-transform: uppercase;">Unlocked Numbers</h3>
         <div id="leadsList"></div>
     </div>
 
@@ -133,7 +131,7 @@
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
     <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
         <div style="width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: 0 auto 20px;"></div>
-        <h2 style="margin-bottom: 25px; font-size: 18px; font-weight: 800; text-align: center;">What happened with this call?</h2>
+        <h2 style="margin-bottom: 25px; font-size: 18px; font-weight: 800; text-align: center;">Update Status</h2>
         
         <div class="modal-option" onclick="setFeedback('Call Nahi Uthayi')">Call Nahi Uthayi</div>
         <div class="modal-option" onclick="setFeedback('Call Cut Kar Di')">Call Cut Kar Di</div>
@@ -146,38 +144,31 @@
 </div>
 
 <script>
-    // Firebase Setup
     const firebaseConfig = { databaseURL: "https://rise-up-4e6ca-default-rtdb.firebaseio.com/" };
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Config
     const botToken = "8431966539:AAFjwS-kYkDpccpSmJeotpNqPEAAcW2wXMY";
     const chatId = "8415600127";
     const leaderCode = localStorage.getItem('userLeaderCode') || "Direct User";
+    let currentAction = null;
 
-    let currentAction = null; // Store current lead being updated
-
-    // Admin Toggle Sync
+    // Sync System Status
     database.ref('system_settings/lead_status').on('value', (snap) => {
         const off = snap.val() === "OFF";
         document.body.classList.toggle('system-off', off);
         document.getElementById('mainBtn').innerText = off ? "SYSTEM CLOSED" : "Get My Numbers";
-        document.getElementById('leadIdInput').disabled = off;
     });
 
     function getLeads() {
         const id = document.getElementById('leadIdInput').value.trim();
-        if(!id) return Swal.fire('Error', 'ID please!', 'warning');
-
+        if(!id) return;
         database.ref('lead_groups/' + id).once('value', (snapshot) => {
             const data = snapshot.val();
-            if(!data) return Swal.fire('Error', 'Invalid Lead ID', 'error');
-            
+            if(!data) return Swal.fire('Error', 'Invalid ID', 'error');
             document.getElementById('resultsArea').style.display = 'block';
             const list = document.getElementById('leadsList');
             list.innerHTML = "";
-            
             data.leads.forEach((num, i) => {
                 const leadKey = `${id}_${i}`;
                 list.innerHTML += `
@@ -196,24 +187,18 @@
                         </div>
                     </div>`;
             });
-            
-            // Telegram Alert
-            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent('🔓 Lead Unlocked!\nLeader: '+leaderCode+'\nID: '+id)}`);
-            Swal.fire({ icon:'success', title:'Success', timer:800, showConfirmButton:false });
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent('🔓 Lead Unlocked: '+leaderCode+'\nID: '+id)}`);
         });
     }
 
     function openModal(leadId, num, index) {
         currentAction = { leadId, num, index };
-        const modal = document.getElementById('modalOverlay');
-        const content = document.getElementById('modalContent');
-        modal.style.display = 'flex';
-        setTimeout(() => content.classList.add('active'), 10);
+        document.getElementById('modalOverlay').style.display = 'flex';
+        setTimeout(() => document.getElementById('modalContent').classList.add('active'), 10);
     }
 
     function closeModal() {
-        const content = document.getElementById('modalContent');
-        content.classList.remove('active');
+        document.getElementById('modalContent').classList.remove('active');
         setTimeout(() => document.getElementById('modalOverlay').style.display = 'none', 300);
     }
 
@@ -223,27 +208,26 @@
         const leadKey = `${leadId}_${index}`;
 
         database.ref('lead_reports/' + leadKey).set({
-            leader: leaderCode,
-            lead_id: leadId,
-            number: num,
-            user_feedback: statusText,
-            time: new Date().toLocaleString()
+            leader: leaderCode, lead_id: leadId, number: num, user_feedback: statusText, time: new Date().toLocaleString()
         }).then(() => {
-            // UI Update
             const trigger = document.getElementById(`trig-${leadKey}`);
             document.getElementById(`label-${leadKey}`).innerText = statusText;
-            trigger.classList.add('updated');
+            
+            // Remove all old colors
+            trigger.classList.remove('status-interested', 'status-not-interested', 'status-switch-off', 'status-default');
+            
+            // Add new dynamic color
+            if(statusText === 'Interested') trigger.classList.add('status-interested');
+            else if(statusText === 'Not Interested') trigger.classList.add('status-not-interested');
+            else if(statusText === 'Switch Off') trigger.classList.add('status-switch-off');
+            else trigger.classList.add('status-default');
             
             closeModal();
-            Swal.fire({ toast:true, position:'top', icon:'success', title:'Status Saved', showConfirmButton:false, timer:1500 });
+            Swal.fire({ toast:true, position:'top', icon:'success', title:'Saved', showConfirmButton:false, timer:1000 });
         });
     }
 
-    function copyNum(n) { 
-        navigator.clipboard.writeText(n); 
-        Swal.fire({ toast:true, position:'top-end', icon:'success', title:'Copied!', showConfirmButton:false, timer:1000 }); 
-    }
+    function copyNum(n) { navigator.clipboard.writeText(n); }
 </script>
-
 </body>
 </html>
